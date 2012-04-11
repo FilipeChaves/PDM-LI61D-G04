@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Programação Dispositivos Moveis - Aula 1</string>
+    <string name="hello">Yamba</string>
+    <string name="buttonValue">Cenas</string>
+    <string name="numberOfChars">140</string>
+    <string name="user">User</string>
+    <string name="pass">Password</string>
+    <string name="url">URL</string>
+    <string name="done">Feito</string>
+    <string name="userSum">Nome de Utilizador</string>
+    <string name="passSum">Password do Utilizador</string>
+    <string name="urlSum">Yamba URL</string>
+    <string name="prefs">Definições</string>
+    <string name="nChars">Número de Caracteres</string>
+    <string name="nCharsSum">Num máx admitido por Twit</string>
+    <string name="nCharsKey">numChars</string>
+    <string name="nTwits">Número de Twits</string>
+    <string name="nTwitsSum">Num máx de Twits</string>
+    <string name="nTwitsKey">numTwits</string>
+    <string name="userKey">username</string>
+    <string name="passKey">password</string>
+    <string name="urlKey">url</string>
+</resources>
