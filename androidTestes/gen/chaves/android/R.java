@@ -18,12 +18,13 @@ public final class R {
     public static final class id {
         public static final int button1=0x7f070006;
         public static final int buttonNChars=0x7f070004;
-        public static final int description=0x7f070009;
+        public static final int description=0x7f07000a;
         public static final int imageView=0x7f070001;
         public static final int img=0x7f070007;
-        public static final int menu_icon_prefs=0x7f07000a;
-        public static final int menu_icon_timeline=0x7f07000b;
+        public static final int menu_icon_prefs=0x7f07000b;
+        public static final int menu_icon_timeline=0x7f07000c;
         public static final int nameTextView=0x7f070000;
+        public static final int publishingTime=0x7f070009;
         public static final int summaryImageTextView=0x7f070002;
         public static final int text=0x7f070003;
         public static final int textEdit=0x7f070005;
@@ -41,9 +42,14 @@ public final class R {
     public static final class string {
         public static final int app_name=0x7f050000;
         public static final int buttonValue=0x7f050002;
+        public static final int defaultUrl=0x7f050018;
+        public static final int descrKey=0x7f05001b;
         public static final int done=0x7f050007;
         public static final int hello=0x7f050001;
+        public static final int hours=0x7f050019;
+        public static final int imgKey=0x7f05001c;
         public static final int load=0x7f050008;
+        public static final int minutes=0x7f05001a;
         public static final int nChars=0x7f05000c;
         public static final int nCharsKey=0x7f05000e;
         public static final int nCharsSum=0x7f05000d;
@@ -54,8 +60,10 @@ public final class R {
         public static final int pass=0x7f050005;
         public static final int passKey=0x7f050013;
         public static final int passSum=0x7f05000a;
-        public static final int prefs=0x7f050015;
-        public static final int timeline=0x7f050016;
+        public static final int prefs=0x7f050016;
+        public static final int publishTimeKey=0x7f050015;
+        public static final int timeline=0x7f050017;
+        public static final int titleKey=0x7f05001d;
         public static final int url=0x7f050006;
         public static final int urlKey=0x7f050014;
         public static final int urlSum=0x7f05000b;

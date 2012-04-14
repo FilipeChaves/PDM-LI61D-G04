@@ -21,4 +21,9 @@
     <string name="userKey">username</string>
     <string name="passKey">password</string>
     <string name="urlKey">url</string>
+    <string name="hours"> horas atrás</string>
+    <string name="minutes"> minutos atrás</string>
+    <string name="descrKey">descr</string>
+    <string name="imgKey">img</string>
+    <string name="titleKey">title</string>
 </resources>

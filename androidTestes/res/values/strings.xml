@@ -21,6 +21,13 @@
     <string name="userKey">username</string>
     <string name="passKey">password</string>
     <string name="urlKey">url</string>
+    <string name="publishTimeKey">time</string>
     <string name="prefs">Preferences</string>
     <string name="timeline">Timeline</string>
+    <string name="defaultUrl">http://yamba.marakana.com/api</string>
+    <string name="hours"> hours ago</string>
+    <string name="minutes"> minutes ago</string>
+    <string name="descrKey">descr</string>
+    <string name="imgKey">img</string>
+    <string name="titleKey">title</string>
 </resources>

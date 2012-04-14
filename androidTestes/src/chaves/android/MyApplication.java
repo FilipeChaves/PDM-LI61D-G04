@@ -28,16 +28,17 @@ public class MyApplication extends Application implements OnSharedPreferenceChan
 	private void createAccount(SharedPreferences prefs) {
 		if(!prefs.contains(getString(R.string.userKey)) || !prefs.contains(getString(R.string.passKey)) || !prefs.contains(getString(R.string.urlKey)))
 			inflatePreferences();
-		openAccount(prefs, false);
 	}
 
 	private void inflatePreferences() {
-		startActivity(new Intent(this, UserPreferencesActivity.class));
+		Intent i = new Intent(this, UserPreferencesActivity.class);
+        i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(i);
 	}
 
 	public Twitter getTwitter(){
 		Log.i(TAG, "MyApplication.getTwitter()");
-		
+		if(_twit == null) openAccount(PreferenceManager.getDefaultSharedPreferences(this), false);
 		return _twit;
 	}
 	
@@ -50,7 +51,7 @@ public class MyApplication extends Application implements OnSharedPreferenceChan
 	}
 	
 	public void openAccount(SharedPreferences s, boolean urlChanged){
-		if(!urlChanged)
+		if(_twit == null || !urlChanged)
 			_twit = new Twitter(s.getString(getString(R.string.userKey), ""),
 				s.getString(getString(R.string.passKey), ""));
 		_twit.setAPIRootUrl(s.getString(getString(R.string.urlKey), getString(R.string.defaultUrl)));

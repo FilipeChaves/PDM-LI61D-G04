@@ -66,7 +66,7 @@ public class TimelineActivity extends ListActivity{
     	Date d = new Date();
     	
 		if(createdAt.getHours() - d.getHours() != 0)
-			return createdAt.getHours() + " " + timeAgo[0];
+			return (d.getHours() - createdAt.getHours()) + " " + timeAgo[0];
 		return (d.getMinutes() - createdAt.getMinutes()) + " " + timeAgo[1];
 	}
 
@@ -91,7 +91,7 @@ public class TimelineActivity extends ListActivity{
             
             try {
             	((ImageView) convertView.findViewById(R.id.img))
-            	.setImageDrawable(this.fetch(data.get(from[0])));
+            	.setImageDrawable(fetch(data.get(from[0])));
             } catch (Exception e) {
             	new RuntimeException(e);
             }
