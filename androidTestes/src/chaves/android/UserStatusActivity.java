@@ -1,8 +1,6 @@
 package chaves.android;
 
-
 import winterwell.jtwitter.Twitter;
-import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.AsyncTask;
@@ -11,13 +9,12 @@ import android.text.Editable;
 import android.text.InputFilter;
 import android.text.TextWatcher;
 import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
-public class UserStatusActivity extends Activity implements TextWatcher  {
+public class UserStatusActivity extends SMActivity implements TextWatcher  {
 
 	private String BUTTON_TEXT = "buttonText";
 	private String BUTTON_BOOL = "buttonEnable";
@@ -27,6 +24,18 @@ public class UserStatusActivity extends Activity implements TextWatcher  {
 	public Button _sendButton;
 	public EditText _tweetTextArea;
 	public InputFilter[] _filters = {new InputFilter.LengthFilter(_maxChars)};
+
+	/** Called when the activity is first created. */
+	@Override
+	public void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.main);
+		init();
+		if(savedInstanceState != null){
+			_sendButton.setEnabled(savedInstanceState.getBoolean(BUTTON_BOOL));
+			_sendButton.setText(savedInstanceState.getString(BUTTON_TEXT));
+		}
+	}
 
 	/**
 	 * Metodo que inicia os componentes da Activity.
@@ -77,19 +86,6 @@ public class UserStatusActivity extends Activity implements TextWatcher  {
 
 	}
 
-	/** Called when the activity is first created. */
-	@Override
-	public void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-		setContentView(R.layout.main);
-		init();
-		if(savedInstanceState != null){
-			_sendButton.setEnabled(savedInstanceState.getBoolean(BUTTON_BOOL));
-			_sendButton.setText(savedInstanceState.getString(BUTTON_TEXT));
-		}
-	}
-
-
 	//Metodo chamado depois do texto do tweet ser alterado
 	public void afterTextChanged(Editable s) {
 		_actualNumberOfChars = _maxChars - s.length();
@@ -122,24 +118,17 @@ public class UserStatusActivity extends Activity implements TextWatcher  {
 	protected void onResume() {
 		super.onResume();
 	}
-	
+
 	//##############################################################################################################
 	//#                                      IMPLEMENTAÇÂO DO MENU                                                 #
 	//##############################################################################################################
+	
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu){	//criacao de menu
 		super.onCreateOptionsMenu(menu);
-		getMenuInflater().inflate(R.menu.menu, menu);
+		menu.findItem(R.id.menu_icon_status).setEnabled(false);
 		return true;
 	}
+	
 
-	@Override
-	public boolean onOptionsItemSelected(MenuItem item){ //criacao da vista depois de carregado no botao
-		super.onOptionsItemSelected(item);
-		if(item.getItemId() == R.id.menu_icon_prefs)
-			startActivity(new Intent(this, UserPreferencesActivity.class));
-		if(item.getItemId() == R.id.menu_icon_timeline)
-			startActivity(new Intent(this, TimelineActivity.class));
-		return true;
-	}
 }

@@ -12,10 +12,12 @@ import java.util.Map;
 
 import winterwell.jtwitter.Twitter;
 import winterwell.jtwitter.Twitter.Status;
-import android.app.ListActivity;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -23,7 +25,7 @@ import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
 
-public class TimelineActivity extends ListActivity{
+public class TimelineActivity extends SMActivity{
 	//o melhor é colocar aqui o arrayAdapter que assim é logo modificado.
 	ArrayList<Map<String,String>> showedList = new ArrayList<Map<String, String>>();
 	List<Status> timelineList;
@@ -114,5 +116,12 @@ public class TimelineActivity extends ListActivity{
     		
     		return Drawable.createFromStream(content, address);
     	}
-    }
+	}
+
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu){	//criacao de menu
+		super.onCreateOptionsMenu(menu);
+		menu.findItem(R.id.menu_icon_timeline).setEnabled(false);
+		return true;
+	}
 }

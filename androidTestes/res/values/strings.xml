@@ -30,4 +30,5 @@
     <string name="descrKey">descr</string>
     <string name="imgKey">img</string>
     <string name="titleKey">title</string>
+    <string name="status">Status</string>
 </resources>

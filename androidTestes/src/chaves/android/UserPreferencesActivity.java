@@ -1,7 +1,5 @@
 package chaves.android;
 
-import android.content.SharedPreferences;
-import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.os.Bundle;
 import android.preference.PreferenceActivity;
 import android.util.Log;
@@ -9,7 +7,6 @@ import android.util.Log;
 public class UserPreferencesActivity extends PreferenceActivity {
 
 	private String TAG;
-	private SharedPreferences prefs;
 	
 	private void init(){
 		TAG = getResources().getString(R.string.hello);

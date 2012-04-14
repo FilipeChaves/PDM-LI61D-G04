@@ -7,8 +7,6 @@ import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.preference.PreferenceManager;
 import android.util.Log;
-import android.view.Menu;
-import android.widget.Toast;
 
 public class MyApplication extends Application implements OnSharedPreferenceChangeListener{
 	/*Application não deve ter estado, só dados para reduzir o custo entre activities do mesmo processo*/
@@ -26,7 +24,8 @@ public class MyApplication extends Application implements OnSharedPreferenceChan
 	}
 	
 	private void createAccount(SharedPreferences prefs) {
-		if(!prefs.contains(getString(R.string.userKey)) || !prefs.contains(getString(R.string.passKey)) || !prefs.contains(getString(R.string.urlKey)))
+		if(!prefs.contains(getString(R.string.userKey)) || 
+				!prefs.contains(getString(R.string.passKey)) || !prefs.contains(getString(R.string.urlKey)))
 			inflatePreferences();
 	}
 

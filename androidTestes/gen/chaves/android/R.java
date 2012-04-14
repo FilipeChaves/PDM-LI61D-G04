@@ -22,6 +22,7 @@ public final class R {
         public static final int imageView=0x7f070001;
         public static final int img=0x7f070007;
         public static final int menu_icon_prefs=0x7f07000b;
+        public static final int menu_icon_status=0x7f07000d;
         public static final int menu_icon_timeline=0x7f07000c;
         public static final int nameTextView=0x7f070000;
         public static final int publishingTime=0x7f070009;
@@ -62,6 +63,7 @@ public final class R {
         public static final int passSum=0x7f05000a;
         public static final int prefs=0x7f050016;
         public static final int publishTimeKey=0x7f050015;
+        public static final int status=0x7f05001e;
         public static final int timeline=0x7f050017;
         public static final int titleKey=0x7f05001d;
         public static final int url=0x7f050006;
