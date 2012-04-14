@@ -15,6 +15,7 @@ import winterwell.jtwitter.Twitter.Status;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -29,7 +30,7 @@ public class TimelineActivity extends SMActivity{
 	//o melhor é colocar aqui o arrayAdapter que assim é logo modificado.
 	ArrayList<Map<String,String>> showedList = new ArrayList<Map<String, String>>();
 	List<Status> timelineList;
-	private final int LIST_MAX_SIZE = 10;
+	private int list_max_size;
 	private String[] timeAgo;
 	public String[] from;
 	private ListView lv;
@@ -39,32 +40,48 @@ public class TimelineActivity extends SMActivity{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.timeline);
         
-        Twitter t = ((MyApplication) getApplication()).getTwitter();
+        Twitter t = app.getTwitter();
         timelineList = t.getHomeTimeline();
         
         init();
 	}
 
-	private void init() {/**Usar AsyncTask??*/
+	private void init() {
+		
 		lv = (ListView) findViewById(android.R.id.list);
         from = new String[]{ getString(R.string.imgKey), getString(R.string.titleKey), 
     			getString(R.string.descrKey), getString(R.string.publishTimeKey) };
         timeAgo = new String[]{getString(R.string.hours), getString(R.string.minutes)};
-		HashMap<String, String> map;
-		int i = 0;
-		while(i < timelineList.size() && i < LIST_MAX_SIZE){
-			map = new HashMap<String, String>();
-			map.put(from[0], timelineList.get(i).user.profileImageUrl.toString());
-			map.put(from[1], timelineList.get(i).user.name);
-			map.put(from[2], timelineList.get(i).getText());
-			map.put(from[3], getDate(timelineList.get(i).createdAt));
-			showedList.add(map);
-			++i;
-		}
+        
+        final TimelineActivity t = this;
 		
-		lv.setAdapter(new myAdapter(this, showedList,
-				R.layout.timelinelist, from, new int[]{ R.id.img, R.id.title, R.id.description, R.id.publishingTime }));
-        //this.setListAdapter(new ArrayAdapter(this, android.R.layout.simple_list_item_1, showedList));
+		(new AsyncTask<String, Void, Void>(){    //AsyncTask To Send Tweet to server
+
+			@Override
+			protected Void doInBackground(String... params) {
+				list_max_size = app.getListMaxSize();
+				HashMap<String, String> map;
+				int i = 0;
+				while(i < timelineList.size() && i < list_max_size){
+					map = new HashMap<String, String>();
+					map.put(from[0], timelineList.get(i).user.profileImageUrl.toString());
+					map.put(from[1], timelineList.get(i).user.name);
+					map.put(from[2], timelineList.get(i).getText());
+					map.put(from[3], getDate(timelineList.get(i).createdAt));
+					showedList.add(map);
+					++i;
+				}
+				return null;
+			}
+			@Override
+			protected void onPostExecute(Void result) {
+				lv.setAdapter(new myAdapter(t, showedList,
+						R.layout.timelinelist, from, new int[]{ R.id.img, R.id.title, R.id.description, R.id.publishingTime }));
+			}
+		}).execute();
+		
+		
+		 //this.setListAdapter(new ArrayAdapter(this, android.R.layout.simple_list_item_1, showedList));
         //Guardar o adapter para nao estarmos sempre a criar um novo.
 	}
 	
@@ -76,7 +93,7 @@ public class TimelineActivity extends SMActivity{
 		return (d.getMinutes() - createdAt.getMinutes()) + " " + timeAgo[1];
 	}
 
-	private class myAdapter extends SimpleAdapter {
+	public class myAdapter extends SimpleAdapter {
 		
         public myAdapter(Context context, List<? extends Map<String, String>> data,
                 int resource, String[] from, int[] to) {

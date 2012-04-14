@@ -19,11 +19,11 @@ public class UserStatusActivity extends SMActivity implements TextWatcher  {
 	private String BUTTON_TEXT = "buttonText";
 	private String BUTTON_BOOL = "buttonEnable";
 
-	public int _maxChars = 140, _actualNumberOfChars;
+	public int _maxChars, _actualNumberOfChars;
 	public TextView _numCharsText;
 	public Button _sendButton;
 	public EditText _tweetTextArea;
-	public InputFilter[] _filters = {new InputFilter.LengthFilter(_maxChars)};
+	public InputFilter[] _filters;
 
 	/** Called when the activity is first created. */
 	@Override
@@ -41,13 +41,17 @@ public class UserStatusActivity extends SMActivity implements TextWatcher  {
 	 * Metodo que inicia os componentes da Activity.
 	 */
 	public void init(){
+		//Numero máximo de caracteres por tweet
+		_maxChars = app.getTweetMaxSize();
+		_filters = new InputFilter[] {new InputFilter.LengthFilter(_maxChars)};
 
 		//Caixa de texto para inserir o tweet
 		_tweetTextArea = (EditText)findViewById(R.id.textEdit); 
-		_tweetTextArea.setFilters(_filters);	
+		_tweetTextArea.setFilters(_filters);
 
 		//TextView que conta o número de caracteres
 		_numCharsText = (TextView)findViewById(R.id.buttonNChars);
+		_numCharsText.setText("" + _maxChars);
 		_numCharsText.setBackgroundColor(Color.BLACK);
 		_numCharsText.setTextColor(Color.GREEN);
 
@@ -117,18 +121,36 @@ public class UserStatusActivity extends SMActivity implements TextWatcher  {
 	@Override
 	protected void onResume() {
 		super.onResume();
+		if(_maxChars == app.getTweetMaxSize()) return;
+		int aux = (_maxChars-_actualNumberOfChars);
+		_maxChars = app.getTweetMaxSize();
+		_filters = new InputFilter[] {new InputFilter.LengthFilter(_maxChars)};
+		/**
+		 * 
+		 * 
+		 * 
+		 * 
+		 * VER ISTO!
+		 * 
+		 * 
+		 */
+		_numCharsText.setText("" + (_maxChars - aux));
+		if(aux <= 0)
+			_numCharsText.setTextColor(Color.RED);
+			else
+		_numCharsText.setTextColor(Color.GREEN);
+		_tweetTextArea.setFilters(_filters);
 	}
 
 	//##############################################################################################################
 	//#                                      IMPLEMENTAÇÂO DO MENU                                                 #
 	//##############################################################################################################
-	
+
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu){	//criacao de menu
 		super.onCreateOptionsMenu(menu);
 		menu.findItem(R.id.menu_icon_status).setEnabled(false);
 		return true;
 	}
-	
 
 }
