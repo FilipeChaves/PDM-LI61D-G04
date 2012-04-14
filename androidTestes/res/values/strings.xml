@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Programming on Mobile Devices</string>
+    <string name="app_name">Yamba Mobile</string>
     <string name="hello">Yamba</string>
     <string name="buttonValue">Submit</string>
     <string name="numberOfChars">140</string>
@@ -15,9 +15,9 @@
     <string name="nChars">Number of Caracters</string>
     <string name="nCharsSum">Twit max number</string>
     <string name="nCharsKey">numChars</string>
-    <string name="nTwits">Number of Twits</string>
-    <string name="nTwitsSum">Max number of Twits</string>
-    <string name="nTwitsKey">numTwits</string>
+    <string name="nTwits">Number of Tweets</string>
+    <string name="nTwitsSum">Max number of Tweets</string>
+    <string name="nTwitsKey">numTweets</string>
     <string name="userKey">username</string>
     <string name="passKey">password</string>
     <string name="urlKey">url</string>

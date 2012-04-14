@@ -1,5 +1,6 @@
 package chaves.android;
 
+
 import winterwell.jtwitter.Twitter;
 import android.app.Activity;
 import android.content.Intent;
@@ -9,129 +10,136 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.InputFilter;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 
 public class UserStatusActivity extends Activity implements TextWatcher  {
-	
+
 	private String BUTTON_TEXT = "buttonText";
 	private String BUTTON_BOOL = "buttonEnable";
-	private String TAG;
-	
-	public void init(){
-		
-		TAG = getResources().getString(R.string.hello);
-		
-		_edidText = (EditText)findViewById(R.id.textEdit);
-        _edidText.setFilters(filters);
-        
-        _textButton = (Button)findViewById(R.id.buttonNChars);
-        _textButton.setBackgroundColor(Color.BLACK);
-        _textButton.setTextColor(Color.GREEN);
-        _textButton.refreshDrawableState();
-        
-        _button = (Button) findViewById(R.id.button1);
-        _button.setOnClickListener(new View.OnClickListener(){
-        	public void onClick(View v) {
-        		(new AsyncTask<String, Void, Twitter.Status>(){
 
-        			@Override
-        			protected void onPreExecute() {
-        				_button.setEnabled(false);
-        				_button.setText(R.string.load);
-        			};
-        			
+	public int _maxChars = 140, _actualNumberOfChars;
+	public TextView _numCharsText;
+	public Button _sendButton;
+	public EditText _tweetTextArea;
+	public InputFilter[] _filters = {new InputFilter.LengthFilter(_maxChars)};
+
+	/**
+	 * Metodo que inicia os componentes da Activity.
+	 */
+	public void init(){
+
+		//Caixa de texto para inserir o tweet
+		_tweetTextArea = (EditText)findViewById(R.id.textEdit); 
+		_tweetTextArea.setFilters(_filters);	
+
+		//TextView que conta o número de caracteres
+		_numCharsText = (TextView)findViewById(R.id.buttonNChars);
+		_numCharsText.setBackgroundColor(Color.BLACK);
+		_numCharsText.setTextColor(Color.GREEN);
+
+
+		//Botão para enviar o tweet
+		_sendButton = (Button) findViewById(R.id.button1);
+		_sendButton.setOnClickListener(new View.OnClickListener(){
+			public void onClick(View v) {
+				(new AsyncTask<String, Void, Twitter.Status>(){    //AsyncTask To Send Tweet to server
+
+					@Override
+					protected void onPreExecute() {
+						_sendButton.setEnabled(false);
+						_sendButton.setText(R.string.load);
+					};
+
 					@Override
 					protected Twitter.Status doInBackground(String... params) {
-						try{Thread.sleep(5000);}
+						try{Thread.sleep(3000);}
 						catch(InterruptedException e){}
 						return ((MyApplication)getApplication()).getTwitter().updateStatus(params[0]);
 					}
-        			
+
 					@Override
 					protected void onPostExecute(Twitter.Status result) {
-						_button.setEnabled(true);
-						_button.setText(R.string.done);
+						_sendButton.setEnabled(true);
+						_sendButton.setText(R.string.done);
+						_tweetTextArea.setText("");   //Clear the text
+						startActivity(new Intent(UserStatusActivity.this,TimelineActivity.class));
 					}
-        		}).execute(_edidText.getText().toString());
-        	}
-        });
-        _edidText.addTextChangedListener(this);
+				}).execute(_tweetTextArea.getText().toString());
+			}
+		});
+
+		_tweetTextArea.addTextChangedListener(this); //Adiciona o Lister que estamos a implementar
+
+	}
+
+	/** Called when the activity is first created. */
+	@Override
+	public void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.main);
+		init();
+		if(savedInstanceState != null){
+			_sendButton.setEnabled(savedInstanceState.getBoolean(BUTTON_BOOL));
+			_sendButton.setText(savedInstanceState.getString(BUTTON_TEXT));
+		}
+	}
+
+
+	//Metodo chamado depois do texto do tweet ser alterado
+	public void afterTextChanged(Editable s) {
+		_actualNumberOfChars = _maxChars - s.length();
+		String st = "" + _actualNumberOfChars;
+		_numCharsText.setText(st.toCharArray(), 0, st.length());
+
+		if(_actualNumberOfChars > 0)
+			_numCharsText.setTextColor(Color.GREEN);
+		else
+			_numCharsText.setTextColor(Color.RED);
+		_numCharsText.refreshDrawableState();
+	}
+	//Não  implementado por causa do filtro aplicado ao tweetTextArea
+	public void beforeTextChanged(CharSequence s, int start, int count, int after) { }
+	public void onTextChanged(CharSequence s, int start, int before, int count) { }
+
+	@Override
+	protected void onSaveInstanceState(Bundle outState) {
+		super.onSaveInstanceState(outState);
+		outState.putString(BUTTON_TEXT, _sendButton.getText().toString());
+		outState.putBoolean(BUTTON_BOOL, _sendButton.isEnabled());
+	}
+
+	@Override
+	protected void onRestart() {
+		super.onRestart();
+	}
+
+	@Override
+	protected void onResume() {
+		super.onResume();
 	}
 	
-    /** Called when the activity is first created. */
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.main);
-        init();
-        if(savedInstanceState != null){
-        	_button.setEnabled(savedInstanceState.getBoolean(BUTTON_BOOL));
-        	_button.setText(savedInstanceState.getString(BUTTON_TEXT));
-        }
-        Log.i(TAG, "UserStatusActivity.onCreate()");
-    }
-    
-    public int maxChars = 140, aux;
-    public Button _textButton;
-    public Button _button;
-    public EditText _edidText;
-    public InputFilter[] filters = {new InputFilter.LengthFilter(maxChars)};
-    
-	public void afterTextChanged(Editable s) {
-		 aux = maxChars - s.length();
-		 String st = "" + aux;
-         _textButton.setText(st.toCharArray(), 0, st.length());
+	//##############################################################################################################
+	//#                                      IMPLEMENTAÇÂO DO MENU                                                 #
+	//##############################################################################################################
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu){	//criacao de menu
+		super.onCreateOptionsMenu(menu);
+		getMenuInflater().inflate(R.menu.menu, menu);
+		return true;
+	}
 
-         if(aux > 0)
-        	 _textButton.setTextColor(Color.GREEN);
-         else
-        	 _textButton.setTextColor(Color.RED);
-         _textButton.refreshDrawableState();
-     }
-     public void beforeTextChanged(CharSequence s, int start, int count, int after) { }
-     public void onTextChanged(CharSequence s, int start, int before, int count) { }
-
-   @Override
-   protected void onSaveInstanceState(Bundle outState) {
-	   super.onSaveInstanceState(outState);
-	   outState.putString(BUTTON_TEXT, _button.getText().toString());
-	   outState.putBoolean(BUTTON_BOOL, _button.isEnabled());
-	   Log.i(TAG, "UserStatusActivity.onSaveInstanceState()");
-   }
-   
-   @Override
-   protected void onRestart() {
-	   super.onRestart();
-	   Log.i(TAG, "UserStatusActivity.onRestart()");
-   }
-   
-   @Override
-   protected void onResume() {
-	   super.onResume();
-	   Log.i(TAG, "UserStatusActivity.onResume()");
-   }
-   
-   @Override
-   public boolean onCreateOptionsMenu(Menu menu){	//criacao de menu
-	   super.onCreateOptionsMenu(menu);
-	   getMenuInflater().inflate(R.menu.menu, menu);
-	   Log.i(TAG, "UserStatusActivity.onCreateOptionsMenu()");
-	   return true;
-   }
-   
-   @Override
-   public boolean onOptionsItemSelected(MenuItem item){ //criacao da vista depois de carregado no botao
-	   super.onOptionsItemSelected(item);
-	   if(item.getItemId() == R.id.menu_icon_prefs)
-		   startActivity(new Intent(this, UserPreferencesActivity.class));
-	   if(item.getItemId() == R.id.menu_icon_timeline)
-		   startActivity(new Intent(this, TimelineActivity.class));
-	   Log.i(TAG, "UserStatusActivity.onOptionsItemSelected()");
-	   return true;
-   }
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item){ //criacao da vista depois de carregado no botao
+		super.onOptionsItemSelected(item);
+		if(item.getItemId() == R.id.menu_icon_prefs)
+			startActivity(new Intent(this, UserPreferencesActivity.class));
+		if(item.getItemId() == R.id.menu_icon_timeline)
+			startActivity(new Intent(this, TimelineActivity.class));
+		return true;
+	}
 }
