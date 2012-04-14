@@ -19,6 +19,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
 
@@ -29,21 +30,24 @@ public class TimelineActivity extends ListActivity{
 	private final int LIST_MAX_SIZE = 10;
 	private String[] timeAgo;
 	public String[] from;
+	private ListView lv;
 	
 	@Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        from = new String[]{ getString(R.string.imgKey), getString(R.string.titleKey), 
-    			getString(R.string.descrKey), getString(R.string.publishTimeKey) };
-        timeAgo = new String[]{getString(R.string.hours), getString(R.string.minutes)};
         setContentView(R.layout.timeline);
+        
         Twitter t = ((MyApplication) getApplication()).getTwitter();
-
         timelineList = t.getHomeTimeline();
+        
         init();
 	}
 
 	private void init() {/**Usar AsyncTask??*/
+		lv = (ListView) findViewById(android.R.id.list);
+        from = new String[]{ getString(R.string.imgKey), getString(R.string.titleKey), 
+    			getString(R.string.descrKey), getString(R.string.publishTimeKey) };
+        timeAgo = new String[]{getString(R.string.hours), getString(R.string.minutes)};
 		HashMap<String, String> map;
 		int i = 0;
 		while(i < timelineList.size() && i < LIST_MAX_SIZE){
@@ -56,7 +60,7 @@ public class TimelineActivity extends ListActivity{
 			++i;
 		}
 		
-		this.setListAdapter(new myAdapter(this, showedList,
+		lv.setAdapter(new myAdapter(this, showedList,
 				R.layout.timelinelist, from, new int[]{ R.id.img, R.id.title, R.id.description, R.id.publishingTime }));
         //this.setListAdapter(new ArrayAdapter(this, android.R.layout.simple_list_item_1, showedList));
         //Guardar o adapter para nao estarmos sempre a criar um novo.
@@ -65,23 +69,21 @@ public class TimelineActivity extends ListActivity{
     private String getDate(Date createdAt) {
     	Date d = new Date();
     	
-		if(createdAt.getHours() - d.getHours() != 0)
+		if(d.getHours() - createdAt.getHours() != 0)
 			return (d.getHours() - createdAt.getHours()) + " " + timeAgo[0];
 		return (d.getMinutes() - createdAt.getMinutes()) + " " + timeAgo[1];
 	}
 
 	private class myAdapter extends SimpleAdapter {
 		
-
         public myAdapter(Context context, List<? extends Map<String, String>> data,
                 int resource, String[] from, int[] to) {
             super(context, data, resource, from, to);
-
         }
 
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
-
+        	
             if (convertView == null) {
                 convertView = getLayoutInflater().inflate(R.layout.timelinelist,
                         null);
