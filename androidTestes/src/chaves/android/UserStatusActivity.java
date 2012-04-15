@@ -2,9 +2,11 @@ package chaves.android;
 
 import winterwell.jtwitter.Twitter;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Looper;
 import android.text.Editable;
 import android.text.InputFilter;
 import android.text.TextWatcher;
@@ -13,23 +15,28 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class UserStatusActivity extends SMActivity implements TextWatcher  {
 
 	private String BUTTON_TEXT = "buttonText";
 	private String BUTTON_BOOL = "buttonEnable";
 
-	public int _maxChars, _actualNumberOfChars;
+	public int _maxChars, _NumberOfCharsLeft;
 	public TextView _numCharsText;
 	public Button _sendButton;
 	public EditText _tweetTextArea;
 	public InputFilter[] _filters;
+	public UserStatusActivity us;
 
 	/** Called when the activity is first created. */
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.main);
+		us = this;
+		if( getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT)
+        	setContentView(R.layout.main);
+        else setContentView(R.layout.statuslandscape);
 		init();
 		if(savedInstanceState != null){
 			_sendButton.setEnabled(savedInstanceState.getBoolean(BUTTON_BOOL));
@@ -61,15 +68,21 @@ public class UserStatusActivity extends SMActivity implements TextWatcher  {
 		_sendButton.setOnClickListener(new View.OnClickListener(){
 			public void onClick(View v) {
 				(new AsyncTask<String, Void, Twitter.Status>(){    //AsyncTask To Send Tweet to server
-
+					boolean aux = false;
 					@Override
 					protected void onPreExecute() {
+						if(_NumberOfCharsLeft < 0){
+							Toast.makeText(us, getString(R.string.errorMessage), Toast.LENGTH_LONG).show();
+							aux = true;
+							return;
+						}
 						_sendButton.setEnabled(false);
 						_sendButton.setText(R.string.load);
 					};
 
 					@Override
 					protected Twitter.Status doInBackground(String... params) {
+						if(aux){ Looper.prepare(); return null; }
 						try{Thread.sleep(3000);}
 						catch(InterruptedException e){}
 						return ((MyApplication)getApplication()).getTwitter().updateStatus(params[0]);
@@ -77,6 +90,7 @@ public class UserStatusActivity extends SMActivity implements TextWatcher  {
 
 					@Override
 					protected void onPostExecute(Twitter.Status result) {
+						if(aux){ aux = false; return;}
 						_sendButton.setEnabled(true);
 						_sendButton.setText(R.string.done);
 						_tweetTextArea.setText("");   //Clear the text
@@ -87,16 +101,15 @@ public class UserStatusActivity extends SMActivity implements TextWatcher  {
 		});
 
 		_tweetTextArea.addTextChangedListener(this); //Adiciona o Lister que estamos a implementar
-
 	}
 
 	//Metodo chamado depois do texto do tweet ser alterado
 	public void afterTextChanged(Editable s) {
-		_actualNumberOfChars = _maxChars - s.length();
-		String st = "" + _actualNumberOfChars;
+		_NumberOfCharsLeft = _maxChars - s.length();
+		String st = "" + _NumberOfCharsLeft;
 		_numCharsText.setText(st.toCharArray(), 0, st.length());
-
-		if(_actualNumberOfChars > 0)
+		
+		if(_NumberOfCharsLeft > 0)
 			_numCharsText.setTextColor(Color.GREEN);
 		else
 			_numCharsText.setTextColor(Color.RED);
@@ -122,23 +135,17 @@ public class UserStatusActivity extends SMActivity implements TextWatcher  {
 	protected void onResume() {
 		super.onResume();
 		if(_maxChars == app.getTweetMaxSize()) return;
-		int aux = (_maxChars-_actualNumberOfChars);
+		int aux = _maxChars - _NumberOfCharsLeft;
+
 		_maxChars = app.getTweetMaxSize();
+		_NumberOfCharsLeft = _maxChars - aux;
 		_filters = new InputFilter[] {new InputFilter.LengthFilter(_maxChars)};
-		/**
-		 * 
-		 * 
-		 * 
-		 * 
-		 * VER ISTO!
-		 * 
-		 * 
-		 */
-		_numCharsText.setText("" + (_maxChars - aux));
-		if(aux <= 0)
+		
+		_numCharsText.setText("" + _NumberOfCharsLeft);
+		if(_NumberOfCharsLeft <= 0)
 			_numCharsText.setTextColor(Color.RED);
-			else
-		_numCharsText.setTextColor(Color.GREEN);
+		else
+			_numCharsText.setTextColor(Color.GREEN);
 		_tweetTextArea.setFilters(_filters);
 	}
 
