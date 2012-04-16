@@ -4,6 +4,6 @@
 	<classpathentry kind="src" path="gen"/>
 	<classpathentry kind="con" path="com.android.ide.eclipse.adt.ANDROID_FRAMEWORK"/>
 	<classpathentry kind="con" path="com.android.ide.eclipse.adt.LIBRARIES"/>
-	<classpathentry kind="lib" path="C:/Users/Filipe/Documents/ISEL/6ºSemestre/PDM/Worksplace/jtwitter-yamba.jar"/>
+	<classpathentry kind="lib" path="E:/ISEL/8Semestre/PDM/jtwitter-yamba.jar"/>
 	<classpathentry kind="output" path="bin/classes"/>
 </classpath>
