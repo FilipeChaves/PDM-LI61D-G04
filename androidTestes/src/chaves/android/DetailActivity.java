@@ -54,6 +54,8 @@ public class DetailActivity extends SMActivity{
 		}
 		_author = (TextView) findViewById(R.id.authorTextView);
 		_author.setText(p.get(getString(R.string.titleKey)));
+		_author = (TextView) findViewById(R.id.authorID);
+		_author.setText(p.get("id"));
 		_date = (TextView) findViewById(R.id.dateTextView);
 		_date.setText(p.get(getString(R.string.publishTimeKey)));
 		_message = (TextView) findViewById(R.id.messageTextView);

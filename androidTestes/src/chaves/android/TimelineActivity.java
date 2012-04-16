@@ -34,6 +34,7 @@ public class TimelineActivity extends SMActivity implements OnItemClickListener{
 	ArrayList<Map<String,String>> showedList = new ArrayList<Map<String, String>>();
 	List<Status> timelineList;
 	private int list_max_size;
+	private int max_chars_per_tweet = 25;
 	private String[] timeAgo;
 	public String[] from;
 	private ListView lv;
@@ -52,7 +53,7 @@ public class TimelineActivity extends SMActivity implements OnItemClickListener{
 		lv = (ListView) findViewById(android.R.id.list);
 		lv.setOnItemClickListener(this);
         from = new String[]{ getString(R.string.imgKey), getString(R.string.titleKey), 
-    			getString(R.string.descrKey), getString(R.string.publishTimeKey) };
+    			getString(R.string.descrKey), getString(R.string.publishTimeKey) , "id"};
         timeAgo = new String[]{getString(R.string.hours), getString(R.string.minutes)};
         
 		(new AsyncTask<String, Void, Void>(){    //AsyncTask To Send Tweet to server
@@ -81,10 +82,12 @@ public class TimelineActivity extends SMActivity implements OnItemClickListener{
     	int i = 0;
 		while(i < timelineList.size() && i < list_max_size){
 			map = new HashMap<String, String>();
-			map.put(from[0], timelineList.get(i).user.profileImageUrl.toString());
-			map.put(from[1], timelineList.get(i).user.name);
-			map.put(from[2], timelineList.get(i).getText());
-			map.put(from[3], getDate(timelineList.get(i).createdAt));
+			Status status = timelineList.get(i);
+			map.put(from[0], status.user.profileImageUrl.toString());
+			map.put(from[1], status.user.name);
+			map.put(from[2], status.getText());
+			map.put(from[3], getDate(status.createdAt));
+			map.put(from[4], "" + status.user.id);
 			showedList.add(map);
 			++i;
 		}
@@ -121,7 +124,6 @@ public class TimelineActivity extends SMActivity implements OnItemClickListener{
 			else h = (Holder)convertView.getTag();
 
 			HashMap<String, String> data = (HashMap<String, String>) getItem(position);
-
 			try {
 				h.image.setImageDrawable(fetch(data.get(from[0])));
 			} catch (Exception e) {
@@ -129,7 +131,9 @@ public class TimelineActivity extends SMActivity implements OnItemClickListener{
 			}
 
 			h.author.setText(data.get(from[1]));
-			h.message.setText(data.get(from[2]));
+			String st = data.get(from[2]);
+			h.message.setText((st.length() < max_chars_per_tweet )
+					? st : (st.substring(0, max_chars_per_tweet) + "..." ));
 			h.date.setText(data.get(from[3]));
 			return convertView;
 		}

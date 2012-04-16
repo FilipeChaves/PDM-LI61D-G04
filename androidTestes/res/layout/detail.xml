@@ -8,8 +8,8 @@
 
     <ImageView
         android:id="@+id/imgDetail"
-        android:layout_width="60dp"
-        android:layout_height="60dp"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
         android:contentDescription="@string/authorImage"
         android:gravity="top|center_vertical"
         android:padding="10dp" />
@@ -19,7 +19,11 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
   		 />
-
+	<TextView
+        android:id="@+id/authorID"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+  		 />
     <TextView
         android:id="@+id/dateTextView"
         android:layout_width="match_parent"
