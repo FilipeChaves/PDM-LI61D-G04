@@ -18,8 +18,6 @@ public class DetailsModel implements Parcelable {
 		readFromParcel(in);
 	}
 
-
-
 	public int describeContents() {
 		return 0;
 	}
