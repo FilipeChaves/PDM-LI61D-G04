@@ -37,6 +37,7 @@ public class TimelineActivity extends SMActivity {
 	public String[] from;
 	private ListView lv;
 	private Twitter t;
+	private myAdapter adapter;
 	
 	@Override
     public void onCreate(Bundle savedInstanceState){
@@ -65,22 +66,12 @@ public class TimelineActivity extends SMActivity {
 			@Override
 			protected Void doInBackground(String... params) {
 				list_max_size = app.getListMaxSize();
-				HashMap<String, String> map;
-				int i = 0;
-				while(i < timelineList.size() && i < list_max_size){
-					map = new HashMap<String, String>();
-					map.put(from[0], timelineList.get(i).user.profileImageUrl.toString());
-					map.put(from[1], timelineList.get(i).user.name);
-					map.put(from[2], timelineList.get(i).getText());
-					map.put(from[3], getDate(timelineList.get(i).createdAt));
-					showedList.add(map);
-					++i;
-				}
+				filterList(timelineList,showedList);
 				return null;
 			}
 			@Override
 			protected void onPostExecute(Void result) {
-				lv.setAdapter(new myAdapter(t, showedList,
+				lv.setAdapter(adapter=new myAdapter(t, showedList,
 						R.layout.timelinelist, from, new int[]{ R.id.img, R.id.title, R.id.description, R.id.publishingTime }));
 			}
 		}).execute();
@@ -90,7 +81,22 @@ public class TimelineActivity extends SMActivity {
         //Guardar o adapter para nao estarmos sempre a criar um novo.
 	}
 	
-    private String getDate(Date createdAt) {
+    protected void filterList( List<Status> scr, ArrayList<Map<String, String>> dest) {
+    	HashMap<String, String> map;
+    	showedList.clear();
+    	int i = 0;
+		while(i < timelineList.size() && i < list_max_size){
+			map = new HashMap<String, String>();
+			map.put(from[0], timelineList.get(i).user.profileImageUrl.toString());
+			map.put(from[1], timelineList.get(i).user.name);
+			map.put(from[2], timelineList.get(i).getText());
+			map.put(from[3], getDate(timelineList.get(i).createdAt));
+			showedList.add(map);
+			++i;
+		}
+	}
+
+	private String getDate(Date createdAt) {
     	Date d = new Date();
     	
 		if(d.getHours() - createdAt.getHours() != 0)
@@ -160,6 +166,9 @@ public class TimelineActivity extends SMActivity {
 
 	private void refreshTimeline(){
 		timelineList = t.getHomeTimeline();
+		filterList(timelineList, showedList);
+		lv.setAdapter(new myAdapter(this, showedList,
+				R.layout.timelinelist, from, new int[]{ R.id.img, R.id.title, R.id.description, R.id.publishingTime }));
 	}
 	private static class Holder{
 		ImageView image;
