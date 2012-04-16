@@ -40,28 +40,39 @@ public class TimelineActivity extends SMActivity implements OnItemClickListener{
 	private ListView lv;
 	private Twitter t;
 	private final TimelineActivity timelineActivity = this;
-	
-	@Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.timeline);
-        app.setTwitter();
-	}
 
-	private void init() {
-		
+	@Override
+	public void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.timeline);
+		//app.setTwitter();
 		lv = (ListView) findViewById(android.R.id.list);
 		lv.setOnItemClickListener(this);
-        from = new String[]{ getString(R.string.imgKey), getString(R.string.titleKey), 
-    			getString(R.string.descrKey), getString(R.string.publishTimeKey) , "id"};
-        timeAgo = new String[]{getString(R.string.hours), getString(R.string.minutes)};
-        
-		(new AsyncTask<String, Void, Void>(){    //AsyncTask To Send Tweet to server
+		from = new String[]{ getString(R.string.imgKey), getString(R.string.titleKey), 
+				getString(R.string.descrKey), getString(R.string.publishTimeKey) , "id"};
+		timeAgo = new String[]{getString(R.string.hours), getString(R.string.minutes)};
+	}
+
+	protected void refreshTimeline() {
+		timelineList = t.getHomeTimeline();
+		(new AsyncTask<String, Void, Void>(){    //AsyncTask para a conversão de lista para hashMap
 			@Override
 			protected Void doInBackground(String... params) {
+				HashMap<String, String> map;
 				list_max_size = app.getListMaxSize();
-				filterList(timelineList,showedList);
-				
+				showedList.clear();
+				int i = 0;
+				while(i < timelineList.size() && i < list_max_size){
+					map = new HashMap<String, String>();
+					Twitter.Status status = timelineList.get(i);
+					map.put(from[0], status.user.profileImageUrl.toString());
+					map.put(from[1], status.user.name);
+					map.put(from[2], status.getText());
+					map.put(from[3], getDate(status.createdAt));
+					map.put(from[4], "" + status.user.id);
+					showedList.add(map);
+					++i;
+				}
 				return null;
 			}
 			@Override
@@ -70,32 +81,11 @@ public class TimelineActivity extends SMActivity implements OnItemClickListener{
 						R.layout.timelinelist, from, new int[]{ R.id.img, R.id.title, R.id.description, R.id.publishingTime }));
 			}
 		}).execute();
-		
-		
-		 //this.setListAdapter(new ArrayAdapter(this, android.R.layout.simple_list_item_1, showedList));
-        //Guardar o adapter para nao estarmos sempre a criar um novo.
 	}
-	
-    protected void filterList( List<Status> scr, ArrayList<Map<String, String>> dest) {
-    	HashMap<String, String> map;
-    	showedList.clear();
-    	int i = 0;
-		while(i < timelineList.size() && i < list_max_size){
-			map = new HashMap<String, String>();
-			Status status = timelineList.get(i);
-			map.put(from[0], status.user.profileImageUrl.toString());
-			map.put(from[1], status.user.name);
-			map.put(from[2], status.getText());
-			map.put(from[3], getDate(status.createdAt));
-			map.put(from[4], "" + status.user.id);
-			showedList.add(map);
-			++i;
-		}
-	}
-	
-    private String getDate(Date createdAt) {
-    	Date d = new Date();
-    	
+
+	private String getDate(Date createdAt) {
+		Date d = new Date();
+
 		if(d.getHours() - createdAt.getHours() != 0)
 			return (d.getHours() - createdAt.getHours()) + " " + timeAgo[0];
 		return (d.getMinutes() - createdAt.getMinutes()) + " " + timeAgo[1];
@@ -137,13 +127,13 @@ public class TimelineActivity extends SMActivity implements OnItemClickListener{
 			h.date.setText(data.get(from[3]));
 			return convertView;
 		}
-        
-        public Drawable fetch(String address) throws MalformedURLException,IOException {
-    		URL url = new URL(address);
-    		InputStream content = (InputStream) url.getContent();
-    		
-    		return Drawable.createFromStream(content, address);
-    	}
+
+		public Drawable fetch(String address) throws MalformedURLException,IOException {
+			URL url = new URL(address);
+			InputStream content = (InputStream) url.getContent();
+
+			return Drawable.createFromStream(content, address);
+		}
 	}
 
 	@Override
@@ -152,7 +142,7 @@ public class TimelineActivity extends SMActivity implements OnItemClickListener{
 		menu.findItem(R.id.menu_icon_timeline).setEnabled(false);
 		return true;
 	}
-	
+
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item){ 
 		super.onOptionsItemSelected(item);
@@ -161,24 +151,16 @@ public class TimelineActivity extends SMActivity implements OnItemClickListener{
 			refreshTimeline();
 		}
 		return true;
-   }
-
-	private void refreshTimeline(){
-		timelineList = t.getHomeTimeline();
-		filterList(timelineList, showedList);
-		lv.setAdapter(new myAdapter(this, showedList,
-				R.layout.timelinelist, from, new int[]{ R.id.img, R.id.title, R.id.description, R.id.publishingTime }));
 	}
-	
+
 	@Override
 	protected void onResume() {
 		super.onResume();
 		t = app.getTwitter();
 		if(t == null) return;
-		timelineList = t.getHomeTimeline();
-		init();
+		refreshTimeline();
 	}
-	
+
 	private static class Holder{
 		ImageView image;
 		TextView author, date, message;
@@ -191,10 +173,10 @@ public class TimelineActivity extends SMActivity implements OnItemClickListener{
 		parcel.putMap((HashMap<String, String>)map);
 		Bundle b = new Bundle();
 		b.putParcelable("chaves.android.DetailActivity", parcel);
-		 
-        Intent i = new Intent(this, DetailActivity.class);
-        i.putExtras(b);
- 
-        startActivity(i);
+
+		Intent i = new Intent(this, DetailActivity.class);
+		i.putExtras(b);
+
+		startActivity(i);
 	}
 }
