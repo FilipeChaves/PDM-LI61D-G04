@@ -1,12 +1,14 @@
 package chaves.android;
 
-import winterwell.jtwitter.Twitter;
+import java.util.HashMap;
+import java.util.List;
+
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.Color;
-import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Looper;
+import android.os.Message;
+import android.os.Parcel;
 import android.text.Editable;
 import android.text.InputFilter;
 import android.text.TextWatcher;
@@ -28,6 +30,7 @@ public class UserStatusActivity extends SMActivity implements TextWatcher  {
 	public EditText _tweetTextArea;
 	public InputFilter[] _filters;
 	public UserStatusActivity us;
+	public Intent service;
 
 	/** Called when the activity is first created. */
 	@Override
@@ -48,6 +51,7 @@ public class UserStatusActivity extends SMActivity implements TextWatcher  {
 	 * Metodo que inicia os componentes da Activity.
 	 */
 	public void init(){
+
 		//Numero máximo de caracteres por tweet
 		_NumberOfCharsLeft = (_maxChars = app.getTweetMaxSize());
 		_filters = new InputFilter[] {new InputFilter.LengthFilter(_maxChars)};
@@ -67,41 +71,60 @@ public class UserStatusActivity extends SMActivity implements TextWatcher  {
 		_sendButton = (Button) findViewById(R.id.button1);
 		_sendButton.setOnClickListener(new View.OnClickListener(){
 			public void onClick(View v) {
-				(new AsyncTask<String, Void, Twitter.Status>(){    //AsyncTask To Send Tweet to server
-					boolean aux = false;
-					@Override
-					protected void onPreExecute() {
-						if(_NumberOfCharsLeft < 0){
-							Toast.makeText(us, getString(R.string.errorMessage), Toast.LENGTH_LONG).show();
-							aux = true;
-							return;
-						}
-						_sendButton.setEnabled(false);
-						_sendButton.setText(R.string.load);
-					};
+				if(_NumberOfCharsLeft < 0){
+					Toast.makeText(us, getString(R.string.errorMessage), Toast.LENGTH_LONG).show();
+					return;
+				}
+				_sendButton.setEnabled(false);
+				_sendButton.setText(R.string.load);
 
-					@Override
-					protected Twitter.Status doInBackground(String... params) {
-						if(aux){ Looper.prepare(); return null; }
-						try{ Thread.sleep(3000); }
-						catch(InterruptedException e){}
-						return ((MyApplication)getApplication()).getTwitter().updateStatus(params[0]);
-					}
+				putMessage(_tweetTextArea.getText().toString());
 
-					@Override
-					protected void onPostExecute(Twitter.Status result) {
-						if(aux){ aux = false; return;}
-						_sendButton.setEnabled(true);
-						_sendButton.setText(R.string.done);
-						_tweetTextArea.setText("");   //Clear the text
-						startActivity(new Intent(UserStatusActivity.this,TimelineActivity.class));
-					}
-				}).execute(_tweetTextArea.getText().toString());
+				_sendButton.setEnabled(true);
+				_sendButton.setText(R.string.done);
+				_tweetTextArea.setText("");   //Clear the text
+				startActivity(new Intent(UserStatusActivity.this,TimelineActivity.class));
 			}
+			
+			private void putMessage(String message) {
+				
+				HashMap<String,String> m = new HashMap<String,String>();
+				m.put("Twitter", message);
+				Intent i = new Intent(UserStatusActivity.this, PublishService.class);
+				i.putExtra("TwitterMessage", message);
+				
+				startService(i);
+			}
+			
+			
+//			private void putMessage(String message) {
+////				MyHandler h = new MyHandler("PublishHandlerThread"/*, i*/);
+//				
+//				HashMap<String,String> m = new HashMap<String,String>();
+//				m.put("Twitter", message);
+//				Intent i = new Intent(UserStatusActivity.this, PublishService.class);
+//				
+//				DetailsModel parcel = new DetailsModel();
+////				parcel.putMap(m);
+////				Bundle b = new Bundle();
+////				b.putParcelable("chaves.android.UserStatusActivity", parcel);
+//				Message msg = new Message();
+//				//Parcel p = Parcel.obtain();
+//				p.createStringArray();
+//				p.writeStringArray(new String[]{message});
+//				msg.obj = p;
+//				//m.put("Twitter", message);
+//				//parcel.putMap(m);
+//				i.putExtra("chaves.android.DetailsModel", msg);
+////				Intent i = new Intent(UserStatusActivity.this, PublishService.class);
+//				startService(i);
+//			}
+
 		});
 
 		_tweetTextArea.addTextChangedListener(this); //Adiciona o Lister que estamos a implementar
 	}
+
 
 	//Metodo chamado depois do texto do tweet ser alterado
 	public void afterTextChanged(Editable s) {
