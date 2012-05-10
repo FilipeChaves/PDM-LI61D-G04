@@ -9,9 +9,9 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import winterwell.jtwitter.Status;
-import chaves.services.TimeLinePull;
+
 import winterwell.jtwitter.Twitter;
+import winterwell.jtwitter.Status;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
@@ -28,11 +28,12 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
+import chaves.services.TimeLinePull;
 
 public class TimelineActivity extends SMActivity implements OnItemClickListener{
 	//o melhor é colocar aqui o arrayAdapter que assim é logo modificado.
 	ArrayList<Map<String,String>> showedList = new ArrayList<Map<String, String>>();
-	List<Status> timelineList;
+	List<winterwell.jtwitter.Status> timelineList;
 	private int list_max_size;
 	private int max_chars_per_tweet = 25;
 	private String[] timeAgo;
@@ -45,7 +46,8 @@ public class TimelineActivity extends SMActivity implements OnItemClickListener{
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.timeline);
-//		TimeLinePull.getInstance().setCallback(new RefreshTimeLineImplementation(this));
+		app.setTimeline(this);
+		Log.i("TIMELINE", "onCreate");
 		lv = (ListView) findViewById(android.R.id.list);
 		lv.setOnItemClickListener(this);
 		from = new String[]{ getString(R.string.imgKey), getString(R.string.titleKey), 
@@ -53,18 +55,19 @@ public class TimelineActivity extends SMActivity implements OnItemClickListener{
 		timeAgo = new String[]{getString(R.string.hours), getString(R.string.minutes)};
 	}
 
-	public void refreshTimeline(List<Twitter.Status> list) {
-		final List<Twitter.Status > actualList = list;
-		(new AsyncTask<String, Void, Void>(){    //AsyncTask para a conversão de lista para hashMap
+	public synchronized void refreshTimeline(List<Status> list) {
+		if(list == null) return;
+		final List<Status > actualList = list;
+		Log.i("refresh", "Thread" + Thread.currentThread().getId());
+		(new AsyncTask<String, Object, Object>(){    //AsyncTask para a conversão de lista para hashMap
 			@Override
-			protected Void doInBackground(String... params) {
+			protected Object doInBackground(String... params) {
 				HashMap<String, String> map;
 				list_max_size = app.getListMaxSize();
 				showedList.clear();
 				int i = 0;
 				while(i < actualList.size() && i < list_max_size){
 					map = new HashMap<String, String>();
-					winterwell.jtwitter.Status status = timelineList.get(i)
 					winterwell.jtwitter.Status status = actualList.get(i);
 					map.put(from[0], status.user.profileImageUrl.toString());
 					map.put(from[1], status.user.name);
@@ -74,10 +77,14 @@ public class TimelineActivity extends SMActivity implements OnItemClickListener{
 					showedList.add(map);
 					++i;
 				}
-				return null;
+				for (winterwell.jtwitter.Status status : actualList) { // 
+					Log.d("doInBackground", String.format("%s: %s", status.user.name, status.text)); // 
+				}
+				return 1;
 			}
 			@Override
-			protected void onPostExecute(Void result) {
+			protected void onPostExecute(Object result) {
+				Log.i("onPostExecute", "TÁ MALE"  );
 				lv.setAdapter(new myAdapter(timelineActivity, showedList,
 						R.layout.timelinelist, from, new int[]{ R.id.img, R.id.title, R.id.description, R.id.publishingTime }));
 			}
@@ -149,20 +156,22 @@ public class TimelineActivity extends SMActivity implements OnItemClickListener{
 		super.onOptionsItemSelected(item);
 		if(item.getItemId() == R.id.timelineRefresh){
 			timelineList = t.getHomeTimeline();
-			refreshTimeline(TimeLinePull.getInstance().getTimeLine());
 		}
 		return true;
+	}
+	
+	@Override
+	protected void onDestroy() {
+		super.onDestroy();
+		app.setTimeline(null);
 	}
 
 	@Override
 	protected void onResume() {
 		super.onResume();
-		Log.i("1asdfgag", "afgaeg");
-		t = app.getTwitter();
-		if(t == null) return;
-		if(!app.isServiceRunning());
-		Log.i("2asdfgag", "afgaeg");
-		refreshTimeline(TimeLinePull.getInstance().getTimeLine());
+		if(!app.isServiceRunning())
+			startService(new Intent(this, TimeLinePull.class));
+		refreshTimeline(app.getStatusList());
 	}
 
 	private static class Holder{
