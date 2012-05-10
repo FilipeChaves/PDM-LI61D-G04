@@ -10,19 +10,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import chaves.android.R;
-import chaves.services.TimeLinePull;
-
 import winterwell.jtwitter.Twitter;
-import winterwell.jtwitter.Twitter.Status;
+import winterwell.jtwitter.Status;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Looper;
 import android.util.Log;
-import android.util.TimingLogger;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -33,11 +28,12 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
+import chaves.services.TimeLinePull;
 
 public class TimelineActivity extends SMActivity implements OnItemClickListener{
 	//o melhor é colocar aqui o arrayAdapter que assim é logo modificado.
 	ArrayList<Map<String,String>> showedList = new ArrayList<Map<String, String>>();
-	List<Status> timelineList;
+	List<winterwell.jtwitter.Status> timelineList;
 	private int list_max_size;
 	private int max_chars_per_tweet = 25;
 	private String[] timeAgo;
@@ -59,9 +55,9 @@ public class TimelineActivity extends SMActivity implements OnItemClickListener{
 		timeAgo = new String[]{getString(R.string.hours), getString(R.string.minutes)};
 	}
 
-	public synchronized void refreshTimeline(List<Twitter.Status> list) {
+	public synchronized void refreshTimeline(List<Status> list) {
 		if(list == null) return;
-		final List<Twitter.Status > actualList = list;
+		final List<Status > actualList = list;
 		Log.i("refresh", "Thread" + Thread.currentThread().getId());
 		(new AsyncTask<String, Object, Object>(){    //AsyncTask para a conversão de lista para hashMap
 			@Override
@@ -72,7 +68,7 @@ public class TimelineActivity extends SMActivity implements OnItemClickListener{
 				int i = 0;
 				while(i < actualList.size() && i < list_max_size){
 					map = new HashMap<String, String>();
-					Twitter.Status status = actualList.get(i);
+					winterwell.jtwitter.Status status = actualList.get(i);
 					map.put(from[0], status.user.profileImageUrl.toString());
 					map.put(from[1], status.user.name);
 					map.put(from[2], status.getText());
@@ -81,7 +77,7 @@ public class TimelineActivity extends SMActivity implements OnItemClickListener{
 					showedList.add(map);
 					++i;
 				}
-				for (Twitter.Status status : actualList) { // 
+				for (winterwell.jtwitter.Status status : actualList) { // 
 					Log.d("doInBackground", String.format("%s: %s", status.user.name, status.text)); // 
 				}
 				return 1;

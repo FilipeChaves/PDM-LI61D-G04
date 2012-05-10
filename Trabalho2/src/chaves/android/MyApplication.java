@@ -3,7 +3,7 @@ package chaves.android;
 import java.util.List;
 
 import winterwell.jtwitter.Twitter;
-import winterwell.jtwitter.Twitter.Status;
+import winterwell.jtwitter.Status;
 import android.app.Application;
 import android.content.Intent;
 import android.content.SharedPreferences;
