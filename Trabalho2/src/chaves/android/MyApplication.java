@@ -1,13 +1,16 @@
 package chaves.android;
 
-import chaves.services.TimeLinePull;
+import java.util.List;
+
 import winterwell.jtwitter.Twitter;
+import winterwell.jtwitter.Twitter.Status;
 import android.app.Application;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.preference.PreferenceManager;
 import android.util.Log;
+import chaves.services.TimeLinePull;
 
 public class MyApplication extends Application implements OnSharedPreferenceChangeListener{
 	/*Application não deve ter estado, só dados para reduzir o custo entre activities do mesmo processo*/
@@ -17,6 +20,8 @@ public class MyApplication extends Application implements OnSharedPreferenceChan
 	private final String DEFAULT_TWIT_MAX_SIZE = "140";
 	private SharedPreferences prefs;
 	private boolean _serviceIsRuning;
+	private List<Status> _timelineList;
+	private TimelineActivity _timeline;
 	
 	public boolean isServiceRunning(){
 		return _serviceIsRuning;
@@ -26,7 +31,21 @@ public class MyApplication extends Application implements OnSharedPreferenceChan
 		_serviceIsRuning = state;
 	}
 	
+	public void setTimeline(TimelineActivity t){
+		_timeline = t;
+	}
 
+	public void setStatusList(List<Status> list){
+		_timelineList = list;
+		if(_timeline != null)
+			_timeline.refreshTimeline(list);
+	}
+	
+	public List<Status> getStatusList(){
+		Log.i("App", "getAtatusList");
+		return _timelineList;
+	}
+	
 	@Override
 	public void onCreate() {
 		super.onCreate();
@@ -35,9 +54,6 @@ public class MyApplication extends Application implements OnSharedPreferenceChan
 		prefs.registerOnSharedPreferenceChangeListener(this);
 		createAccount(prefs);
 		Log.i(TAG, "MyApplication.onCreate()");
-		
-		startService(new Intent(this, TimeLinePull.class));
-		setServiceRunning(true);
 	}
 	
 	@Override

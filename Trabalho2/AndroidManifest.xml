@@ -24,7 +24,7 @@
         <activity android:name="DetailActivity"></activity>
         <activity android:name="SMActivity"></activity>
         <service android:name="PublishService" ></service>
-        <service android:name="TimeLinePull" ></service>
+        <service android:name="chaves.services.TimeLinePull" ></service>
     </application>
 
 </manifest>
