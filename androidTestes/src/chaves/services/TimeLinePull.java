@@ -5,7 +5,7 @@ import java.util.List;
 import winterwell.jtwitter.Twitter;
 import winterwell.jtwitter.TwitterException;
 
-import chaves.android.IRefreshTimeLine;
+//import chaves.android.IRefreshTimeLine;
 import chaves.android.MyApplication;
 import android.app.Service;
 import android.content.Intent;
@@ -20,19 +20,19 @@ public class TimeLinePull extends Service {
 	private static final String TAG = "TimeLinePull";
 	private Updater _updater;
 	private MyApplication _application;
-	private IRefreshTimeLine _callback;
-	
-	public  void setCallback(IRefreshTimeLine callback){
-		_callback = callback;
-	}
+//	private IRefreshTimeLine _callback;
+//	
+//	public  void setCallback(IRefreshTimeLine callback){
+//		_callback = callback;
+//	}
 	
 	public synchronized static TimeLinePull getInstance(){
-		if(_instance == null)
-		{
-			_instance = new TimeLinePull();
-		}
+		if(_instance != null)
+			return _instance;
+		_instance = new TimeLinePull();
+		_instance.onCreate();
 		Log.i(TAG,"getInstance");
-		return _instance; 
+		return _instance.getInstance(); 
 	}
 	
 
@@ -85,8 +85,10 @@ public class TimeLinePull extends Service {
 		private List<Twitter.Status> _timeline;
 		
 		public List<Twitter.Status> getTimeLine(){
+			if(_application == null)
+				_application = (MyApplication)getApplication();
 			try{
-				_timeline = _application.getTwitter().getFriendsTimeline();
+				_timeline = _application.getTwitter().getHomeTimeline();
 			}
 			catch(TwitterException e){
 				Log.e(TAG,"Failed to connect to twitter");
@@ -104,7 +106,6 @@ public class TimeLinePull extends Service {
 			{
 				Log.i(TAG, "TimeLine running");
 				try{
-					
 					try{
 						_timeline = _application.getTwitter().getHomeTimeline();
 					}

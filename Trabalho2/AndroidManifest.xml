@@ -8,7 +8,7 @@
 	
     <application
         android:icon="@drawable/ic_launcher"
-        android:label="@string/app_name" android:name="MyApplication"
+        android:label="@string/app_name" android:name=".MyApplication"
         android:debuggable="true">
         <activity
             android:name=".TimelineActivity"
@@ -22,8 +22,9 @@
         <activity android:name="UserPreferencesActivity"></activity>
         <activity android:name="UserStatusActivity"></activity>
         <activity android:name="DetailActivity"></activity>
-        <activity android:name="SMActivity"></activity>
+        <activity android:name=".SMActivity"></activity>
         <service android:name="PublishService" ></service>
+        <service android:name=".TimeLinePull" ></service>
     </application>
 
 </manifest>

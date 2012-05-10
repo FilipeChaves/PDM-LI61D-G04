@@ -47,7 +47,7 @@ public class TimelineActivity extends SMActivity implements OnItemClickListener{
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.timeline);
-		TimeLinePull.getInstance().setCallback(new RefreshTimeLineImplementation(this));
+//		TimeLinePull.getInstance().setCallback(new RefreshTimeLineImplementation(this));
 		lv = (ListView) findViewById(android.R.id.list);
 		lv.setOnItemClickListener(this);
 		from = new String[]{ getString(R.string.imgKey), getString(R.string.titleKey), 
@@ -158,8 +158,11 @@ public class TimelineActivity extends SMActivity implements OnItemClickListener{
 	@Override
 	protected void onResume() {
 		super.onResume();
+		Log.i("1asdfgag", "afgaeg");
 		t = app.getTwitter();
 		if(t == null) return;
+		if(!app.isServiceRunning());
+		Log.i("2asdfgag", "afgaeg");
 		refreshTimeline(TimeLinePull.getInstance().getTimeLine());
 	}
 
