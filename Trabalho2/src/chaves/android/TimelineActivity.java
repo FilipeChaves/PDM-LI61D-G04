@@ -10,6 +10,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import chaves.services.TimeLinePull;
+
 import winterwell.jtwitter.Twitter;
 import winterwell.jtwitter.Twitter.Status;
 import android.content.Context;
@@ -45,7 +47,7 @@ public class TimelineActivity extends SMActivity implements OnItemClickListener{
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.timeline);
-		//app.setTwitter();
+//		TimeLinePull.getInstance().setCallback(new RefreshTimeLineImplementation(this));
 		lv = (ListView) findViewById(android.R.id.list);
 		lv.setOnItemClickListener(this);
 		from = new String[]{ getString(R.string.imgKey), getString(R.string.titleKey), 
@@ -53,9 +55,8 @@ public class TimelineActivity extends SMActivity implements OnItemClickListener{
 		timeAgo = new String[]{getString(R.string.hours), getString(R.string.minutes)};
 	}
 
-	protected void refreshTimeline() {
-		timelineList = t.getHomeTimeline();
-		if(timelineList.size() == 0) return;
+	public void refreshTimeline(List<Twitter.Status> list) {
+		final List<Twitter.Status > actualList = list;
 		(new AsyncTask<String, Void, Void>(){    //AsyncTask para a conversão de lista para hashMap
 			@Override
 			protected Void doInBackground(String... params) {
@@ -63,9 +64,9 @@ public class TimelineActivity extends SMActivity implements OnItemClickListener{
 				list_max_size = app.getListMaxSize();
 				showedList.clear();
 				int i = 0;
-				while(i < timelineList.size() && i < list_max_size){
+				while(i < actualList.size() && i < list_max_size){
 					map = new HashMap<String, String>();
-					Twitter.Status status = timelineList.get(i);
+					Twitter.Status status = actualList.get(i);
 					map.put(from[0], status.user.profileImageUrl.toString());
 					map.put(from[1], status.user.name);
 					map.put(from[2], status.getText());
@@ -149,7 +150,7 @@ public class TimelineActivity extends SMActivity implements OnItemClickListener{
 		super.onOptionsItemSelected(item);
 		if(item.getItemId() == R.id.timelineRefresh){
 			timelineList = t.getHomeTimeline();
-			refreshTimeline();
+			refreshTimeline(TimeLinePull.getInstance().getTimeLine());
 		}
 		return true;
 	}
@@ -157,9 +158,12 @@ public class TimelineActivity extends SMActivity implements OnItemClickListener{
 	@Override
 	protected void onResume() {
 		super.onResume();
+		Log.i("1asdfgag", "afgaeg");
 		t = app.getTwitter();
 		if(t == null) return;
-		refreshTimeline();
+		if(!app.isServiceRunning());
+		Log.i("2asdfgag", "afgaeg");
+		refreshTimeline(TimeLinePull.getInstance().getTimeLine());
 	}
 
 	private static class Holder{
@@ -180,4 +184,6 @@ public class TimelineActivity extends SMActivity implements OnItemClickListener{
 
 		startActivity(i);
 	}
+	
+	
 }

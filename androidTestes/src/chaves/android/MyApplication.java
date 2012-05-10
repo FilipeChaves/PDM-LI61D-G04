@@ -35,6 +35,9 @@ public class MyApplication extends Application implements OnSharedPreferenceChan
 		prefs.registerOnSharedPreferenceChangeListener(this);
 		createAccount(prefs);
 		Log.i(TAG, "MyApplication.onCreate()");
+		
+		startService(new Intent(this, TimeLinePull.class));
+		setServiceRunning(true);
 	}
 	
 	@Override

@@ -1,5 +1,6 @@
 package chaves.android;
 
+import chaves.services.TimeLinePull;
 import winterwell.jtwitter.Twitter;
 import android.app.Application;
 import android.content.Intent;
@@ -15,6 +16,16 @@ public class MyApplication extends Application implements OnSharedPreferenceChan
 	private final String DEFAULT_LIST_MAX_SIZE = "10";
 	private final String DEFAULT_TWIT_MAX_SIZE = "140";
 	private SharedPreferences prefs;
+	private boolean _serviceIsRuning;
+	
+	public boolean isServiceRunning(){
+		return _serviceIsRuning;
+	}
+	
+	public void setServiceRunning(boolean state){
+		_serviceIsRuning = state;
+	}
+	
 
 	@Override
 	public void onCreate() {
@@ -24,6 +35,16 @@ public class MyApplication extends Application implements OnSharedPreferenceChan
 		prefs.registerOnSharedPreferenceChangeListener(this);
 		createAccount(prefs);
 		Log.i(TAG, "MyApplication.onCreate()");
+		
+		startService(new Intent(this, TimeLinePull.class));
+		setServiceRunning(true);
+	}
+	
+	@Override
+	public void onTerminate(){
+		super.onTerminate();
+		stopService(new Intent(this, TimeLinePull.class));
+		Log.i(TAG,"onTerminate");
 	}
 	
 	private void createAccount(SharedPreferences prefs) {
