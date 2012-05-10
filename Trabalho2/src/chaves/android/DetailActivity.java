@@ -2,9 +2,6 @@ package chaves.android;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
-
-import javax.crypto.spec.DESKeySpec;
-
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.ImageView;

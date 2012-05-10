@@ -24,16 +24,21 @@ public final class R {
         public static final int description=0x7f07000d;
         public static final int img=0x7f07000a;
         public static final int imgDetail=0x7f070000;
-        public static final int menu_icon_prefs=0x7f07000e;
-        public static final int menu_icon_status=0x7f070010;
-        public static final int menu_icon_timeline=0x7f07000f;
+        public static final int menu_icon_prefs=0x7f070012;
+        public static final int menu_icon_status=0x7f070014;
+        public static final int menu_icon_timeline=0x7f070013;
+        public static final int menu_icon_userinfo=0x7f070016;
         public static final int messageTextView=0x7f070004;
+        public static final int msg_number=0x7f07000f;
         public static final int publishingTime=0x7f07000c;
+        public static final int subscribers_number=0x7f070011;
+        public static final int subscriptions_number=0x7f070010;
         public static final int text=0x7f070005;
         public static final int textEdit=0x7f070007;
         public static final int textLandscape=0x7f070009;
-        public static final int timelineRefresh=0x7f070011;
+        public static final int timelineRefresh=0x7f070015;
         public static final int title=0x7f07000b;
+        public static final int user_id=0x7f07000e;
     }
     public static final class layout {
         public static final int detail=0x7f030000;
@@ -41,6 +46,7 @@ public final class R {
         public static final int statuslandscape=0x7f030002;
         public static final int timeline=0x7f030003;
         public static final int timelinelist=0x7f030004;
+        public static final int userinfo=0x7f030005;
     }
     public static final class menu {
         public static final int menu=0x7f060000;
@@ -80,6 +86,7 @@ public final class R {
         public static final int urlKey=0x7f050014;
         public static final int urlSum=0x7f05000b;
         public static final int user=0x7f050004;
+        public static final int userInfo=0x7f050024;
         public static final int userKey=0x7f050012;
         public static final int userSum=0x7f050009;
     }

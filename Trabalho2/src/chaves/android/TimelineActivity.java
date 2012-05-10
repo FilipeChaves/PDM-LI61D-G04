@@ -10,8 +10,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import winterwell.jtwitter.Status;
 import winterwell.jtwitter.Twitter;
-import winterwell.jtwitter.Twitter.Status;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
@@ -65,7 +65,7 @@ public class TimelineActivity extends SMActivity implements OnItemClickListener{
 				int i = 0;
 				while(i < timelineList.size() && i < list_max_size){
 					map = new HashMap<String, String>();
-					Twitter.Status status = timelineList.get(i);
+					winterwell.jtwitter.Status status = timelineList.get(i);
 					map.put(from[0], status.user.profileImageUrl.toString());
 					map.put(from[1], status.user.name);
 					map.put(from[2], status.getText());

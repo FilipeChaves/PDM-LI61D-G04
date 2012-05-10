@@ -35,6 +35,7 @@ public class SMActivity extends Activity{
 		   startActivity(new Intent(this, TimelineActivity.class));
 	   if(item.getItemId() == R.id.menu_icon_status)
 		   startActivity(new Intent(this, UserStatusActivity.class));
+	   if(item.getItemId() == R.id.menu_icon_userinfo)
 	   Log.i(TAG, "SharedMenu.onOptionsItemSelected()");
 	   return true;
    }

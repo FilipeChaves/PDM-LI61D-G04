@@ -17,4 +17,5 @@
             android:title="@string/status" 
             android:icon="@drawable/ic_menu_friendslist"></item>
         <item android:id="@+id/timelineRefresh" android:title="@string/timelineRefresh" android:icon="@drawable/ic_menu_friendslist"></item>
+        <item android:id="@+id/menu_icon_userinfo" android:title="@string/userInfo" android:icon="@drawable/ic_menu_friendslist"></item>
     </menu>
