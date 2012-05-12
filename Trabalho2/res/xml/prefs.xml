@@ -21,4 +21,11 @@
         android:key="@string/nTwitsKey"
         android:title="@string/nTwits"
         android:summary="@string/nTwitsSum" />
+    <CheckBoxPreference 
+        android:key="@string/autoRKey"
+        android:title="@string/autoRefresh" />
+    <EditTextPreference
+        android:key="@string/delayKey"
+        android:title="@string/delayTitle"
+        android:summary="@string/delaySubText" />
 </PreferenceScreen>

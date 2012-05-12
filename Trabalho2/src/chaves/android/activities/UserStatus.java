@@ -1,7 +1,13 @@
-package chaves.android;
+package chaves.android.activities;
 
 import java.util.HashMap;
 import java.util.List;
+
+import chaves.android.R;
+import chaves.android.R.id;
+import chaves.android.R.layout;
+import chaves.android.R.string;
+import chaves.android.services.PublishService;
 
 import android.content.Intent;
 import android.content.res.Configuration;
@@ -19,7 +25,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class UserStatusActivity extends SMActivity implements TextWatcher  {
+public class UserStatus extends SMActivity implements TextWatcher  {
 
 	private String BUTTON_TEXT = "buttonText";
 	private String BUTTON_BOOL = "buttonEnable";
@@ -29,7 +35,7 @@ public class UserStatusActivity extends SMActivity implements TextWatcher  {
 	public Button _sendButton;
 	public EditText _tweetTextArea;
 	public InputFilter[] _filters;
-	public UserStatusActivity us;
+	public UserStatus us;
 	public Intent service;
 
 	/** Called when the activity is first created. */
@@ -83,14 +89,14 @@ public class UserStatusActivity extends SMActivity implements TextWatcher  {
 				_sendButton.setEnabled(true);
 				_sendButton.setText(R.string.done);
 				_tweetTextArea.setText("");   //Clear the text
-				startActivity(new Intent(UserStatusActivity.this,TimelineActivity.class));
+				startActivity(new Intent(UserStatus.this,Timeline.class));
 			}
 			
 			private void putMessage(String message) {
 				
 				HashMap<String,String> m = new HashMap<String,String>();
 				m.put("Twitter", message);
-				Intent i = new Intent(UserStatusActivity.this, PublishService.class);
+				Intent i = new Intent(UserStatus.this, PublishService.class);
 				i.putExtra("TwitterMessage", message);
 				
 				startService(i);

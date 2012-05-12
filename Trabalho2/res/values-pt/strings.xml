@@ -29,4 +29,8 @@
     <string name="load">A Carregar</string>
     <string name="status">Status</string>
     <string name="errorMessage">Erro: O número de Caracteres foi excedido </string>
+    <string name="authorImage">Imagem do autor</string>
+        <string name="delayTitle">Delay em segundos</string>
+    <string name="delaySubText">Entre refresh da Timeline</string>
+    <string name="autoRefresh">Timeline AutoRefresh</string>
 </resources>

@@ -1,5 +1,7 @@
-package chaves.android;
+package chaves.android.services;
 
+import chaves.android.YambaApplication;
+import chaves.android.activities.UserInfo;
 import winterwell.jtwitter.User;
 import android.app.Service;
 import android.content.Intent;
@@ -14,7 +16,7 @@ import android.util.Log;
 public class UserInfoPull extends Service{
 	
 	public static final int UPDATE = 0;
-	public static MyApplication _app;
+	public static YambaApplication _app;
 	
 	Messenger _serviceMessenger = new Messenger(new Handler(){
 		@Override
@@ -42,6 +44,7 @@ public class UserInfoPull extends Service{
 	
 	@Override
 	public IBinder onBind(Intent intent) {
+		log("onBind");
 		return _serviceMessenger.getBinder();
 	}
 	
@@ -51,7 +54,7 @@ public class UserInfoPull extends Service{
 		b.putString(UserInfo.USERNAME, user.name);
 		b.putString(UserInfo.USERIMAGE, user.profileImageUrl.toString());
 		b.putInt(UserInfo.MSGNR, user.statusesCount);
-		b.putInt(UserInfo.SUBSCRPNR, user.favoritesCount);
+		b.putInt(UserInfo.SUBSCRPNR, user.friendsCount);
 		b.putInt(UserInfo.SUBSCRBNR, user.followersCount);
 		return b;
 	}
@@ -59,12 +62,12 @@ public class UserInfoPull extends Service{
 	public void onCreate() { 
 		log("onCreate");	
 		super.onCreate(); 
-		_app = (MyApplication) getApplication();
+		_app = (YambaApplication) getApplication();
 	}
 	public int onStartCommand(Intent intent, int flags, int startId) {
 		log("onStartCommand"); return super.onStartCommand(intent, flags, startId);	}
 	public void onDestroy() { log("onDestroy"); super.onDestroy();	}
 	public boolean onUnbind(Intent intent) { log("onUnbind"); return super.onUnbind(intent); }
 	public void onRebind(Intent intent) { log("onRebind"); super.onRebind(intent); }
-	private static void log(String txt) { Log.d("UserInfoPull",txt);}
+	private static void log(String txt) { Log.d("UserInfoPull", txt);}
 }

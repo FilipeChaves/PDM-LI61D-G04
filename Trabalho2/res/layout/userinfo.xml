@@ -5,7 +5,7 @@
     android:baselineAligned="false"
     android:gravity="top"
     android:orientation="vertical" >
-
+
     <ImageView
         android:id="@+id/imgDetail"
         android:layout_width="100dp"
@@ -13,22 +13,22 @@
         android:contentDescription="@string/authorImage"
         android:gravity="top|center_vertical"
         android:padding="10dp" />
-
+
     <TextView
         android:id="@+id/user_id"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
-
+
     <TextView
         android:id="@+id/msg_number"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
-
+
     <TextView
         android:id="@+id/subscriptions_number"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
-
+
     <TextView
         android:id="@+id/subscribers_number"
         android:layout_width="match_parent"

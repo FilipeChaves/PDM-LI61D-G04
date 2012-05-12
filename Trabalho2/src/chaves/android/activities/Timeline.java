@@ -1,21 +1,16 @@
-package chaves.android;
+package chaves.android.activities;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.MalformedURLException;
-import java.net.URL;
+
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import winterwell.jtwitter.Twitter;
 import winterwell.jtwitter.Status;
+import winterwell.jtwitter.Twitter;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -28,78 +23,53 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
-import chaves.services.TimeLinePull;
+import chaves.android.DetailsModel;
+import chaves.android.R;
+import chaves.android.Utils;
+import chaves.android.YambaApplication;
+import chaves.android.services.TimelinePull;
 
-public class TimelineActivity extends SMActivity implements OnItemClickListener{
-	//o melhor é colocar aqui o arrayAdapter que assim é logo modificado.
+public class Timeline extends SMActivity implements OnItemClickListener{
+	
+	private final String TAG = "TimelineActivity";
 	ArrayList<Map<String,String>> showedList = new ArrayList<Map<String, String>>();
-	List<winterwell.jtwitter.Status> timelineList;
+	List<Status> timelineList;
 	private int list_max_size;
 	private int max_chars_per_tweet = 25;
 	private String[] timeAgo;
 	public String[] from;
 	private ListView lv;
 	private Twitter t;
-	private final TimelineActivity timelineActivity = this;
+	private final Timeline timelineActivity = this;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.timeline);
-		app.setTimeline(this);
-		Log.i("TIMELINE", "onCreate");
 		lv = (ListView) findViewById(android.R.id.list);
 		lv.setOnItemClickListener(this);
-		from = new String[]{ getString(R.string.imgKey), getString(R.string.titleKey), 
-				getString(R.string.descrKey), getString(R.string.publishTimeKey) , "id"};
-		timeAgo = new String[]{getString(R.string.hours), getString(R.string.minutes)};
+		from = app.getFrom();
+		timeAgo = app.getTimeAgo();
+		((YambaApplication)getApplication()).setTimeLineActivity(this);
+		Log.i(TAG,"onCreate");
+	}
+	
+	@Override
+	protected void onDestroy() {
+		super.onDestroy();
+		app.setTimeLineActivity(null);
 	}
 
-	public synchronized void refreshTimeline(List<Status> list) {
+	public void refreshTimeline(List<Map<String,String>> list) {
 		if(list == null) return;
-		final List<Status > actualList = list;
-		Log.i("refresh", "Thread" + Thread.currentThread().getId());
-		(new AsyncTask<String, Object, Object>(){    //AsyncTask para a conversão de lista para hashMap
-			@Override
-			protected Object doInBackground(String... params) {
-				HashMap<String, String> map;
-				list_max_size = app.getListMaxSize();
-				showedList.clear();
-				int i = 0;
-				while(i < actualList.size() && i < list_max_size){
-					map = new HashMap<String, String>();
-					winterwell.jtwitter.Status status = actualList.get(i);
-					map.put(from[0], status.user.profileImageUrl.toString());
-					map.put(from[1], status.user.name);
-					map.put(from[2], status.getText());
-					map.put(from[3], getDate(status.createdAt));
-					map.put(from[4], "" + status.user.id);
-					showedList.add(map);
-					++i;
-				}
-				for (winterwell.jtwitter.Status status : actualList) { // 
-					Log.d("doInBackground", String.format("%s: %s", status.user.name, status.text)); // 
-				}
-				return 1;
-			}
-			@Override
-			protected void onPostExecute(Object result) {
-				Log.i("onPostExecute", "TÁ MALE"  );
-				lv.setAdapter(new myAdapter(timelineActivity, showedList,
-						R.layout.timelinelist, from, new int[]{ R.id.img, R.id.title, R.id.description, R.id.publishingTime }));
-			}
-		}).execute();
-	}
-
-	private String getDate(Date createdAt) {
-		Date d = new Date();
-
-		if(d.getHours() - createdAt.getHours() != 0)
-			return (d.getHours() - createdAt.getHours()) + " " + timeAgo[0];
-		return (d.getMinutes() - createdAt.getMinutes()) + " " + timeAgo[1];
+		lv.setAdapter(new myAdapter(timelineActivity, list,
+				R.layout.timelinelist, from, new int[]{ R.id.img, R.id.title, R.id.description, R.id.publishingTime }));
+		Log.i(TAG,"refreshTimeLine");
 	}
 
 	public class myAdapter extends SimpleAdapter {
+
+		Map<String, Drawable> drawableMap = new HashMap<String, Drawable>();
 
 		public myAdapter(Context context, List<? extends Map<String, String>> data,
 				int resource, String[] from, int[] to) {
@@ -123,7 +93,15 @@ public class TimelineActivity extends SMActivity implements OnItemClickListener{
 
 			HashMap<String, String> data = (HashMap<String, String>) getItem(position);
 			try {
-				h.image.setImageDrawable(fetch(data.get(from[0])));
+				Drawable d;
+				String url;
+				if(drawableMap.containsKey(url = data.get(from[0])))
+					d = drawableMap.get(url);
+				else{
+					d = Utils.fetch(url);
+					drawableMap.put(url, d);
+				}
+				h.image.setImageDrawable(d);
 			} catch (Exception e) {
 				new RuntimeException(e);
 			}
@@ -134,13 +112,6 @@ public class TimelineActivity extends SMActivity implements OnItemClickListener{
 					? st : (st.substring(0, max_chars_per_tweet) + "..." ));
 			h.date.setText(data.get(from[3]));
 			return convertView;
-		}
-
-		public Drawable fetch(String address) throws MalformedURLException,IOException {
-			URL url = new URL(address);
-			InputStream content = (InputStream) url.getContent();
-
-			return Drawable.createFromStream(content, address);
 		}
 	}
 
@@ -155,23 +126,18 @@ public class TimelineActivity extends SMActivity implements OnItemClickListener{
 	public boolean onOptionsItemSelected(MenuItem item){ 
 		super.onOptionsItemSelected(item);
 		if(item.getItemId() == R.id.timelineRefresh){
-			timelineList = t.getHomeTimeline();
+			app.refreshTimeline();
 		}
 		return true;
-	}
-	
-	@Override
-	protected void onDestroy() {
-		super.onDestroy();
-		app.setTimeline(null);
 	}
 
 	@Override
 	protected void onResume() {
 		super.onResume();
-		if(!app.isServiceRunning())
-			startService(new Intent(this, TimeLinePull.class));
-		refreshTimeline(app.getStatusList());
+		if(!app.isTimeLineServiceRunning())
+			startService(new Intent(this, TimelinePull.class));
+		refreshTimeline(((YambaApplication)getApplication()).getTimeLinedata());
+		Log.i(TAG,"onResume");
 	}
 
 	private static class Holder{
@@ -187,11 +153,10 @@ public class TimelineActivity extends SMActivity implements OnItemClickListener{
 		Bundle b = new Bundle();
 		b.putParcelable("chaves.android.DetailActivity", parcel);
 
-		Intent i = new Intent(this, DetailActivity.class);
+		Intent i = new Intent(this, Detail.class);
 		i.putExtras(b);
 
 		startActivity(i);
 	}
-	
-	
+
 }

@@ -1,13 +1,20 @@
-package chaves.android;
+package chaves.android.activities;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
+
+import chaves.android.DetailsModel;
+import chaves.android.R;
+import chaves.android.Utils;
+import chaves.android.R.id;
+import chaves.android.R.layout;
+import chaves.android.R.string;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-public class DetailActivity extends SMActivity{
+public class Detail extends SMActivity{
 	
 
 

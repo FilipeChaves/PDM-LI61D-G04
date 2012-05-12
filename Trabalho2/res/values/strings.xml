@@ -21,6 +21,7 @@
     <string name="userKey">username</string>
     <string name="passKey">password</string>
     <string name="urlKey">url</string>
+    <string name="idKey">id</string>
     <string name="publishTimeKey">time</string>
     <string name="prefs">Preferences</string>
     <string name="timeline">Timeline</string>
@@ -32,9 +33,17 @@
     <string name="titleKey">title</string>
     <string name="status">Status</string>
     <string name="hintTextStatus">Enter your status</string>
-    <string name="authorImage">Imagem do autor</string>
+    <string name="authorImage">Author Image</string>
     <string name="detail">Detail</string>
     <string name="errorMessage">Error: Number of chars exceeded </string>
     <string name="timelineRefresh">Refresh</string>
+    <string name="titleServiceStart">Service Start</string>
+    <string name="titleServiceStop">Service Stop</string>
     <string name="userInfo">User Info</string>
+    <string name="internetDown">Please make sure you have Wi-Fi connection before open this application</string>
+    <string name="autoRKey">autoR</string>
+    <string name="delayKey">delay</string>
+    <string name="delayTitle">Delay in seconds</string>
+    <string name="delaySubText">Between Timeline Refresh</string>
+    <string name="autoRefresh">Timeline AutoRefresh</string>
 </resources>

@@ -1,10 +1,11 @@
-package chaves.android;
+package chaves.android.activities;
 
+import chaves.android.R;
 import android.os.Bundle;
 import android.preference.PreferenceActivity;
 import android.util.Log;
 
-public class UserPreferencesActivity extends PreferenceActivity {
+public class UserPreferences extends PreferenceActivity {
 
 	private String TAG;
 	
@@ -19,7 +20,6 @@ public class UserPreferencesActivity extends PreferenceActivity {
 		addPreferencesFromResource(R.xml.prefs);
 		Log.i(TAG, "UserPreferencesActivity.onCreate()");
 	}
-	
 	
 	@Override
 	protected void onStart() {
