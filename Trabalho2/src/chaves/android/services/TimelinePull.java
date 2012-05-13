@@ -26,7 +26,6 @@ public class TimelinePull extends Service {
 	private boolean _runFlag = false;
 	private Updater _updater;
 	private YambaApplication _application;
-
 	
 	/**
 	 * 	Não Implementado , só para boundedServices
@@ -127,15 +126,13 @@ public class TimelinePull extends Service {
 				Log.i(TAG, "TimeLine ran");
 				if(!_application.getAutoRefresh()){
 					timeLineService._runFlag = false;
-					timeLineService.stopService(new Intent(timeLineService, TimelinePull.class));
+					return;
 				}
 				try{
 					Thread.sleep(_application.getDelay());
 				}
 				catch(InterruptedException e){}
 			}
-			
-			
 		}
 		
 		public boolean isRunning(){

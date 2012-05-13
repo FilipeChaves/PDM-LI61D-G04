@@ -51,12 +51,15 @@ public class YambaApplication extends Application implements OnSharedPreferenceC
 		
 		if(_timelineActivity != null)
 		{
+			final boolean refresh = _autoRefresh;
 			Thread thread = (new Thread(){
 				@Override
 				public void run(){
 					_timelineActivity.runOnUiThread(new Runnable() { // O truque está aqui
 					    public void run() {
 					    	_timelineActivity.refreshTimeline(list);
+					    	if(!refresh)
+					    		stopService(new Intent(_timelineActivity, TimelinePull.class));
 					    }
 					});	
 				}
