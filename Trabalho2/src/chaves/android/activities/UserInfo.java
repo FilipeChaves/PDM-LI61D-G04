@@ -11,6 +11,7 @@ import chaves.android.services.UserInfoPull;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
@@ -41,7 +42,9 @@ public class UserInfo extends SMActivity implements ServiceConnection {
 	public void onCreate(Bundle savedInstanceState) {
 		Log.i("UserInfo", "onCreate");
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.userinfo);
+		if( getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT)
+        	setContentView(R.layout.userinfo);
+        else setContentView(R.layout.userinfolandscape);
 		initViews();
 	}
 	

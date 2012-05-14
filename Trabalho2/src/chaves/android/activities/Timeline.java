@@ -68,7 +68,7 @@ public class Timeline extends SMActivity implements OnItemClickListener{
 	}
 
 	public class myAdapter extends SimpleAdapter {
-
+		/*Mapa onde são guardados os Drawable para que seja mais rápido o seu carregamento*/
 		Map<String, Drawable> drawableMap = new HashMap<String, Drawable>();
 
 		public myAdapter(Context context, List<? extends Map<String, String>> data,

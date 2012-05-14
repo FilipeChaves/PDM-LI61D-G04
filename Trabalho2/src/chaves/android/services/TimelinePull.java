@@ -46,8 +46,6 @@ public class TimelinePull extends Service {
 		Log.i(TAG,"onCreate");
 	}
 	
-
-	
 	/**
 	 * Depois de passar os vários estados do serviço este é o principal que vai correr o código pretendido.
 	 */

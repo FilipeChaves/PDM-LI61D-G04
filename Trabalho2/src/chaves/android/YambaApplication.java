@@ -15,29 +15,62 @@ import android.util.Log;
 import android.widget.Toast;
 import chaves.android.activities.Timeline;
 import chaves.android.activities.UserPreferences;
+import chaves.android.activities.UserStatus;
 import chaves.android.services.TimelinePull;
 
+/* Application não deve ter estado, só dados para reduzir o custo entre activities do mesmo processo */
 public class YambaApplication extends Application implements OnSharedPreferenceChangeListener{
-	/*Application não deve ter estado, só dados para reduzir o custo entre activities do mesmo processo*/
+	
 	private Twitter _tweet;
 	private final String TAG = "YambaApplication";
 	private final String DEFAULT_LIST_MAX_SIZE = "10";
 	private final String DEFAULT_TWIT_MAX_SIZE = "140";
 	private SharedPreferences prefs;
+	private UserStatus _userStatusActivity;
+	private boolean _userStatusButtonIsDisable;
 	private boolean _timeLineServiceIsRuning;
 	private boolean _autoRefresh;
+	/* Array utilizados para ler/escrever no mapa */
 	private String[] _from;
+	/* Array com a descrição dos tempos no ecrã da timeline */
 	private String[] _timeAgo;
 	private int _delay;
 	private Timeline _timelineActivity;
 	private TimelinePull.Updater _timelineServiceThread;
 	private LinkedList<Map<String,String>> _timelineData;
 	
+	/** Guarda a instância actual de Timeline
+	 * de modo a que quando haja uma modificação na lista _timeline
+	 * a aplicação possa comunicar essa modificação
+	 * */
 	public void setTimeLineActivity(Timeline timeline){
 		_timelineActivity = timeline;
 		Log.i(TAG, "setTimeLineActivity");
 	}
 	
+	public void setButtonEnable(boolean enable){
+		_userStatusButtonIsDisable = enable;
+		Log.i(TAG, "setButtonEnable");
+	}
+	
+	/** Guarda a instância actual de UserStatus
+	 * de modo a que se o utilizador rodar o ecrã enquanto o botão está disable
+	 * possa coloca-lo como Enable
+	 * */
+	public void setUserStatusActivity(UserStatus userStatus){
+		UserStatus old = _userStatusActivity;
+		_userStatusActivity = userStatus;
+		if(old == null && userStatus != null && _userStatusButtonIsDisable){
+			userStatus.setButtonEnable();
+			_userStatusButtonIsDisable = false;
+		}
+		Log.i(TAG, "setUserStatusActivity");
+	}
+	
+	/**
+	 * Método utilizado para colocar em memória a lista de Tweets
+	 * Se estiver a ser exibida a TimelineActivity esta é automaticamente actualizada
+	 * */
 	public void setTimeLinedata(final ArrayList<Map<String,String>> list){
 		Log.i(TAG, "setTimeLinedata()");
 		if(_timelineData == null)
@@ -93,7 +126,7 @@ public class YambaApplication extends Application implements OnSharedPreferenceC
 	@Override
 	public void onCreate() {
 		super.onCreate();
-		/*Inicialização dos Arrays de Strings presentes na classe Utils*/
+		/* Inicialização dos Arrays de Strings presentes na classe Utils, e que também serão usados na TimelineActivity */
 		Utils.init(_from = new String[]{ getString(R.string.imgKey), getString(R.string.titleKey), 
 				getString(R.string.descrKey), getString(R.string.publishTimeKey) , getString(R.string.idKey)},
 				_timeAgo = new String[]{getString(R.string.hours), getString(R.string.minutes)});

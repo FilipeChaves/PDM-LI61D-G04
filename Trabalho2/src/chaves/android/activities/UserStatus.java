@@ -51,6 +51,15 @@ public class UserStatus extends SMActivity implements TextWatcher  {
 			_sendButton.setEnabled(savedInstanceState.getBoolean(BUTTON_BOOL));
 			_sendButton.setText(savedInstanceState.getString(BUTTON_TEXT));
 		}
+		
+		app.setUserStatusActivity(this);
+	}
+	/**Se o utilizador rodar o ecrã enquanto o botão está disable
+	 * a application aquando da criação da activity UserStatus
+	 * Chama este método para colocar o botão enable.
+	 *  */
+	public void setButtonEnable() {
+		_sendButton.setEnabled(true);
 	}
 
 	/**
@@ -82,16 +91,24 @@ public class UserStatus extends SMActivity implements TextWatcher  {
 					return;
 				}
 				_sendButton.setEnabled(false);
+				app.setButtonEnable(false);
 				_sendButton.setText(R.string.load);
-
+				
 				putMessage(_tweetTextArea.getText().toString());
-
+				try {
+					Thread.sleep(1000);
+				} catch (InterruptedException e) {
+					new RuntimeException(e);
+				}
 				_sendButton.setEnabled(true);
+				app.setButtonEnable(true);
 				_sendButton.setText(R.string.done);
 				_tweetTextArea.setText("");   //Clear the text
 				startActivity(new Intent(UserStatus.this,Timeline.class));
 			}
 			
+			/** Coloca a mensagem num Intent e inicia o PublishService 
+			 * */
 			private void putMessage(String message) {
 				
 				HashMap<String,String> m = new HashMap<String,String>();
@@ -101,30 +118,6 @@ public class UserStatus extends SMActivity implements TextWatcher  {
 				
 				startService(i);
 			}
-			
-			
-//			private void putMessage(String message) {
-////				MyHandler h = new MyHandler("PublishHandlerThread"/*, i*/);
-//				
-//				HashMap<String,String> m = new HashMap<String,String>();
-//				m.put("Twitter", message);
-//				Intent i = new Intent(UserStatusActivity.this, PublishService.class);
-//				
-//				DetailsModel parcel = new DetailsModel();
-////				parcel.putMap(m);
-////				Bundle b = new Bundle();
-////				b.putParcelable("chaves.android.UserStatusActivity", parcel);
-//				Message msg = new Message();
-//				//Parcel p = Parcel.obtain();
-//				p.createStringArray();
-//				p.writeStringArray(new String[]{message});
-//				msg.obj = p;
-//				//m.put("Twitter", message);
-//				//parcel.putMap(m);
-//				i.putExtra("chaves.android.DetailsModel", msg);
-////				Intent i = new Intent(UserStatusActivity.this, PublishService.class);
-//				startService(i);
-//			}
 
 		});
 
@@ -155,6 +148,13 @@ public class UserStatus extends SMActivity implements TextWatcher  {
 		outState.putBoolean(BUTTON_BOOL, _sendButton.isEnabled());
 	}
 
+	
+	@Override
+	protected void onDestroy() {
+		super.onDestroy();
+		app.setUserStatusActivity(null);
+	}
+	
 	@Override
 	protected void onRestart() {
 		super.onRestart();
