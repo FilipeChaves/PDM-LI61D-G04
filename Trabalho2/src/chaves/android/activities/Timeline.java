@@ -154,7 +154,8 @@ public class Timeline extends SMActivity implements OnItemClickListener{
 	}
 
 	public void onItemClick(AdapterView<?> arg0, View arg1, int position, long arg3) {
-		Log.i("YAMBA", "TIMELINEACTIVITY");
+		Log.i("YAMBA", "TIMELINEACTIVITY"
+				);
 		Object map = lv.getItemAtPosition(position);
 		DetailsModel parcel = new DetailsModel();
 		parcel.putMap((HashMap<String, String>)map);

@@ -1,12 +1,12 @@
 package chaves.android;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.LinkedList;
 import java.util.Map;
 
 import winterwell.jtwitter.Status;
 import winterwell.jtwitter.Twitter;
+import winterwell.jtwitter.URLConnectionHttpClient;
 import android.app.Application;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -24,7 +24,7 @@ public class YambaApplication extends Application implements OnSharedPreferenceC
 	private Twitter _tweet;
 	private final String TAG = "YambaApplication";
 	private final String DEFAULT_LIST_MAX_SIZE = "10";
-	private final String DEFAULT_TWIT_MAX_SIZE = "140";
+	private final String DEFAULT_TWEET_MAX_SIZE = "140";
 	private SharedPreferences prefs;
 	private UserStatus _userStatusActivity;
 	private boolean _userStatusButtonIsDisable;
@@ -148,7 +148,7 @@ public class YambaApplication extends Application implements OnSharedPreferenceC
 	
 	private void createAccount(SharedPreferences prefs) {
 		if((!prefs.contains(getString(R.string.userKey))) || 
-				(!prefs.contains(getString(R.string.passKey))))
+				(!prefs.contains(getString(R.string.passKey))) || (!prefs.contains(getString(R.string.urlKey))))
 			inflatePreferences();
 		_autoRefresh = prefs.getBoolean(getString(R.string.autoRKey), true);
 		_delay = Integer.parseInt(prefs.getString(getString(R.string.delayKey), "100"));
@@ -165,8 +165,10 @@ public class YambaApplication extends Application implements OnSharedPreferenceC
 
 	public Twitter getTwitter(){
 		Log.i(TAG, "MyApplication.getTwitter()");
-		if(_tweet == null)
+		if(_tweet == null){
 			openAccount(false);
+			return null;
+		}
 		return _tweet;
 	}
 	
@@ -194,8 +196,12 @@ public class YambaApplication extends Application implements OnSharedPreferenceC
 				pass = prefs.getString(getString(R.string.passKey), "");
 		if(pass.equals("") || user.equals(""))
 			return;
-		if(_tweet == null || !urlChanged)
-			_tweet = new Twitter(user,pass);
+		if(!urlChanged){
+			/*Novo Constructor de Twitter, nao funciona desta maneira*/
+//			URLConnectionHttpClient conn = new URLConnectionHttpClient(user, pass);
+//			_tweet = new Twitter(user, conn);
+			_tweet = new Twitter(user, pass);
+		}
 		_tweet.setAPIRootUrl(prefs.getString(getString(R.string.urlKey), getString(R.string.defaultUrl)));
 	}
 
@@ -204,7 +210,7 @@ public class YambaApplication extends Application implements OnSharedPreferenceC
 	}
 	
 	public int getTweetMaxSize() {
-		return Integer.parseInt(prefs.getString(getString(R.string.nCharsKey), DEFAULT_TWIT_MAX_SIZE));
+		return Integer.parseInt(prefs.getString(getString(R.string.nCharsKey), DEFAULT_TWEET_MAX_SIZE));
 	}
 
 	public long getDelay() {

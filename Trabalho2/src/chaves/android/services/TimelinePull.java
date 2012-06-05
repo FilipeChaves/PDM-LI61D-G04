@@ -1,7 +1,6 @@
 package chaves.android.services;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -12,8 +11,9 @@ import winterwell.jtwitter.TwitterException;
 import android.app.Service;
 import android.content.Intent;
 import android.os.IBinder;
+import android.os.Looper;
 import android.util.Log;
-import chaves.android.R;
+import android.widget.Toast;
 import chaves.android.Utils;
 import chaves.android.YambaApplication;
 
@@ -96,7 +96,7 @@ public class TimelinePull extends Service {
 		public void run(){
 			TimelinePull timeLineService = TimelinePull.this;
 			List<Status> actualTimeLine = null;
-			while(timeLineService._runFlag)
+			while(_runFlag)
 			{
 				
 				Log.i(TAG, "TimeLine running");
@@ -114,6 +114,9 @@ public class TimelinePull extends Service {
 				catch(TwitterException e){
 					Log.e(TAG,"Failed to connect to twitter");
 				}
+				if(actualTimeLine == null){
+					stopRunning();
+				}
 				//So notifica se houver mudanças
 				//TODO Mais tarde verificar o conteudo e só actualizar se houve um tweet diferente
 				if(_timeline == null && actualTimeLine != null || actualTimeLine.size() != _timeline.size()){
@@ -121,17 +124,21 @@ public class TimelinePull extends Service {
 					putDataInMapper();
 					_application.setTimeLinedata(_showedList);
 				}
-				
 				Log.i(TAG, "TimeLine ran");
 				if(!_application.getAutoRefresh()){
-					timeLineService._runFlag = false;
-					return;
+					stopRunning();
 				}
 				try{
 					Thread.sleep(_application.getDelay());
 				}
 				catch(InterruptedException e){}
 			}
+		}
+		
+		public void stopRunning(){
+			Toast.makeText(TimelinePull.this, "VAI PO CARALHO!", Toast.LENGTH_LONG).show();
+			_runFlag = false;
+			return;
 		}
 		
 		public boolean isRunning(){

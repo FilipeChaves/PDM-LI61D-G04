@@ -14,9 +14,9 @@ import chaves.android.YambaApplication;
 
 public class PublishService extends Service{
 	
-	public HandlerThread mh;
-	public Handler h;
-	public static YambaApplication app;
+	private HandlerThread mh;
+	private Handler h;
+	private static YambaApplication app;
 	private boolean _success = false;
 	
 	@Override
