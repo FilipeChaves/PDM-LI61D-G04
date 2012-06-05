@@ -1,6 +1,7 @@
 package chaves.android;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.LinkedList;
 import java.util.Map;
 
@@ -12,7 +13,6 @@ import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.preference.PreferenceManager;
 import android.util.Log;
-import android.widget.Toast;
 import chaves.android.activities.Timeline;
 import chaves.android.activities.UserPreferences;
 import chaves.android.activities.UserStatus;
@@ -30,6 +30,7 @@ public class YambaApplication extends Application implements OnSharedPreferenceC
 	private boolean _userStatusButtonIsDisable;
 	private boolean _timeLineServiceIsRuning;
 	private boolean _autoRefresh;
+	private boolean _wifi;
 	/* Array utilizados para ler/escrever no mapa */
 	private String[] _from;
 	/* Array com a descrição dos tempos no ecrã da timeline */
@@ -38,6 +39,7 @@ public class YambaApplication extends Application implements OnSharedPreferenceC
 	private Timeline _timelineActivity;
 	private TimelinePull.Updater _timelineServiceThread;
 	private LinkedList<Map<String,String>> _timelineData;
+	private LinkedList<String> _pendingStatus;
 	
 	/** Guarda a instância actual de Timeline
 	 * de modo a que quando haja uma modificação na lista _timeline
@@ -130,15 +132,9 @@ public class YambaApplication extends Application implements OnSharedPreferenceC
 		Utils.init(_from = new String[]{ getString(R.string.imgKey), getString(R.string.titleKey), 
 				getString(R.string.descrKey), getString(R.string.publishTimeKey) , getString(R.string.idKey)},
 				_timeAgo = new String[]{getString(R.string.hours), getString(R.string.minutes)});
-		/*Verificação do estado da Internet, se não existir conectividade é mostrada uma mensagem e o programa acaba*/
-		if(!Utils.haveInternet( this )){
-			Toast.makeText(this, R.string.internetDown, Toast.LENGTH_LONG).show();
-			onTerminate();
-		}
-		
+		_pendingStatus = new LinkedList<String>();
 		prefs = PreferenceManager.getDefaultSharedPreferences(this);
 		prefs.registerOnSharedPreferenceChangeListener(this);
-		
 		createAccount(prefs);
 		Log.i(TAG, "onCreate");
 	}
@@ -160,7 +156,6 @@ public class YambaApplication extends Application implements OnSharedPreferenceC
 			_timelineServiceThread.interrupt();
 		}
 	}
-
 
 	private void inflatePreferences() {
 		Intent i = new Intent(this, UserPreferences.class);
@@ -233,6 +228,39 @@ public class YambaApplication extends Application implements OnSharedPreferenceC
 	
 	public String[] getTimeAgo() {
 		return _timeAgo;
+	}
+	
+	public void setWiFiState(boolean state) {
+		_wifi = state;
+	}
+	
+	public LinkedList<String> getPendingStatus() {
+		//		if(_pendingStatus == null)
+//			return ContentProvider.getPendingStatus();
+		return _pendingStatus;
+	}
+	
+	public void setPendingStatus(LinkedList<String> statusList) {
+		 _pendingStatus = statusList;
+	}
+	
+	public void addToPendingStatus(String message) {		
+		_pendingStatus.add(message);
+	}
+	
+	public void removePendingStatus() {		
+		_pendingStatus.clear();
+	}
+	
+	public boolean hasInternet(){
+		return _wifi;
+	}
+	private int count =0;
+	public int getCount(){
+		if(count != 0)
+			return count;
+		++count;
+		return 0;
 	}
 	
 }

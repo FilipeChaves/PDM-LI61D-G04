@@ -13,6 +13,7 @@ import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.widget.Toast;
 
 public class Utils {
 	
@@ -42,12 +43,18 @@ public class Utils {
 	public static boolean haveInternet(Context ctx) {
 
 	    NetworkInfo info = (NetworkInfo) ((ConnectivityManager) ctx
-	            .getSystemService(Context.CONNECTIVITY_SERVICE)).getActiveNetworkInfo();
+	            .getSystemService(Context.CONNECTIVITY_SERVICE)).getNetworkInfo(ConnectivityManager.TYPE_WIFI);
 
-	    if (info == null || !info.isConnected()) {
+	    if (info == null) 
 	        return false;
-	    }
-	    return true;
+//	    Toast.makeText(ctx, "ConnectivityManager: " + ConnectivityManager.TYPE_WIFI + " Type: " + info.getSubtype(), Toast.LENGTH_LONG).show();
+//	    if(ConnectivityManager.TYPE_WIFI == info.get)
+//	    	return true; //has WIFI
+	    
+	    if(info.isConnected())
+	    	return true;
+	    
+	    return false;
 	}
 
 	public static HashMap<String, String> getMap(Status status) {

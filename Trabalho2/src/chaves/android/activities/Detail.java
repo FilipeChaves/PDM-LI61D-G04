@@ -3,25 +3,25 @@ package chaves.android.activities;
 import java.io.IOException;
 import java.net.MalformedURLException;
 
+import android.content.Intent;
+import android.os.Bundle;
+import android.util.Log;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.TextView;
 import chaves.android.DetailsModel;
 import chaves.android.R;
 import chaves.android.Utils;
-import chaves.android.R.id;
-import chaves.android.R.layout;
-import chaves.android.R.string;
-import android.os.Bundle;
-import android.util.Log;
-import android.widget.ImageView;
-import android.widget.TextView;
 
 public class Detail extends SMActivity{
 	
-
-
 	public ImageView _authorImage;
 	public TextView _author;
 	public TextView _date;
 	public TextView _message;
+	public Button _button;
 	/**
 	 * message.getIntent();
 	 * Cada elemento da lista (Status)
@@ -50,20 +50,36 @@ public class Detail extends SMActivity{
 		try {
 			_authorImage.setImageDrawable(Utils.fetch(p.get(getString(R.string.imgKey))));
 		} catch (MalformedURLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			throw new RuntimeException(e);
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			throw new RuntimeException(e);
 		}
 		_author = (TextView) findViewById(R.id.authorTextView);
 		_author.setText(p.get(getString(R.string.titleKey)));
+		final String user = p.get(getString(R.string.titleKey));
 		_author = (TextView) findViewById(R.id.authorID);
 		_author.setText(p.get("id"));
 		_date = (TextView) findViewById(R.id.dateTextView);
 		_date.setText(p.get(getString(R.string.publishTimeKey)));
+		final String message = p.get(getString(R.string.descrKey));
 		_message = (TextView) findViewById(R.id.messageTextView);
-		_message.setText(p.get(getString(R.string.descrKey)));
+		_message.setText(message);
+		
+		_button = (Button) findViewById(R.id.sendEmail);
+		_button.setOnClickListener(new OnClickListener(){
+			public void onClick(View arg0) {
+				final Intent emailIntent = new Intent( android.content.Intent.ACTION_SEND);
+
+				emailIntent.setType("plain/text");
+
+				emailIntent.putExtra(android.content.Intent.EXTRA_EMAIL, "aefgg");
+
+				
+				emailIntent.putExtra(android.content.Intent.EXTRA_TEXT, getString(R.string.tweetOwner) + " " + user + ": " + message);
+
+				startActivity(Intent.createChooser(emailIntent, "Send mail..."));
+			}
+		});
 	}
 
 }

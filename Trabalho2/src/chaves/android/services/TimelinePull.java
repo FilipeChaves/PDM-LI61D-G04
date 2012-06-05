@@ -98,6 +98,7 @@ public class TimelinePull extends Service {
 			List<Status> actualTimeLine = null;
 			while(timeLineService._runFlag)
 			{
+				
 				Log.i(TAG, "TimeLine running");
 				Twitter t;
 				while((t = _application.getTwitter()) == null){
@@ -120,7 +121,7 @@ public class TimelinePull extends Service {
 					putDataInMapper();
 					_application.setTimeLinedata(_showedList);
 				}
-
+				
 				Log.i(TAG, "TimeLine ran");
 				if(!_application.getAutoRefresh()){
 					timeLineService._runFlag = false;
