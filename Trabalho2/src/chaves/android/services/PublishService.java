@@ -57,21 +57,20 @@ public class PublishService extends Service{
 		super.onStartCommand(intent, flags, startId);
 		
 		final String s = intent.getStringExtra("TwitterMessage");
-		Message msg = Message.obtain();
-		msg.obj = s;
-
-		if(!Utils.haveInternet( this ) || app.getCount() == 0){
-			Toast.makeText(this, "adicionei ao pendingStatus", Toast.LENGTH_LONG).show();
+		if(!Utils.haveInternet( this )){//mudar para ContentProvider
 			app.addToPendingStatus(s);
 		}
 		else{
+			Message msg;
 			LinkedList<String> l = app.getPendingStatus();
 			for(String message : l){
-				Toast.makeText(this, "forStatus PublishService", Toast.LENGTH_LONG).show();
+				msg = Message.obtain();
 				msg.obj = message;
 				h.sendMessage(msg);
 			}
+			msg = Message.obtain();
 			app.removePendingStatus();
+			msg.obj = s;
 			h.sendMessage(msg);
 		}
 		return 1;
