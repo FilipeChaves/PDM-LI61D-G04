@@ -33,4 +33,5 @@
         <string name="delayTitle">Delay em segundos</string>
     <string name="delaySubText">Entre refresh da Timeline</string>
     <string name="autoRefresh">Timeline AutoRefresh</string>
+    <string name="tweetOwner">Este Tweet foi escrito por </string>
 </resources>

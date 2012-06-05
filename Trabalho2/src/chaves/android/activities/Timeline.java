@@ -8,6 +8,8 @@ import java.util.Map;
 
 import winterwell.jtwitter.Status;
 import winterwell.jtwitter.Twitter;
+import android.accounts.Account;
+import android.accounts.AccountManager;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
@@ -23,6 +25,7 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
+import android.widget.Toast;
 import chaves.android.DetailsModel;
 import chaves.android.R;
 import chaves.android.Utils;
@@ -46,6 +49,11 @@ public class Timeline extends SMActivity implements OnItemClickListener{
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.timeline);
+//		AccountManager am = AccountManager.get(this);
+//		Account[] a = am.getAccounts();
+//		for(int i = 0; i < a.length; ++i){
+//			Toast.makeText(this, "cenas : " + a[i].name, Toast.LENGTH_LONG).show();
+//		}
 		lv = (ListView) findViewById(android.R.id.list);
 		lv.setOnItemClickListener(this);
 		from = app.getFrom();
