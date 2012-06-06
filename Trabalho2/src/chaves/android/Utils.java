@@ -7,13 +7,11 @@ import java.net.URL;
 import java.util.Date;
 import java.util.HashMap;
 
-import winterwell.jtwitter.Status;
-
+import winterwell.jtwitter.Twitter.Status;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.widget.Toast;
 
 public class Utils {
 	
@@ -42,18 +40,13 @@ public class Utils {
 
 	public static boolean haveInternet(Context ctx) {
 
-	    NetworkInfo info = (NetworkInfo) ((ConnectivityManager) ctx
-	            .getSystemService(Context.CONNECTIVITY_SERVICE)).getNetworkInfo(ConnectivityManager.TYPE_WIFI);
-
-	    if (info == null) 
-	        return false;
-//	    Toast.makeText(ctx, "ConnectivityManager: " + ConnectivityManager.TYPE_WIFI + " Type: " + info.getSubtype(), Toast.LENGTH_LONG).show();
-//	    if(ConnectivityManager.TYPE_WIFI == info.get)
-//	    	return true; //has WIFI
-	    
+	    NetworkInfo info = ((ConnectivityManager) ctx.getSystemService(Context.CONNECTIVITY_SERVICE))
+	    		//.getNetworkInfo(ConnectivityManager.TYPE_WIFI); //NAO FUNCIONA COM EMULADOR!
+	    		.getActiveNetworkInfo();
+	    if (info == null)
+	    	return false;
 	    if(info.isConnected())
 	    	return true;
-	    
 	    return false;
 	}
 

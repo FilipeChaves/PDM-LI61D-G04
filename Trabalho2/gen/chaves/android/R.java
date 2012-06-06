@@ -15,6 +15,8 @@ public final class R {
         public static final int email_logo=0x7f020001;
         public static final int ic_launcher=0x7f020002;
         public static final int ic_menu_friendslist=0x7f020003;
+        public static final int twitter21=0x7f020004;
+        public static final int twitter_logo=0x7f020005;
     }
     public static final class id {
         public static final int authorID=0x7f070002;
@@ -82,7 +84,11 @@ public final class R {
         public static final int nTwits=0x7f05000f;
         public static final int nTwitsKey=0x7f050011;
         public static final int nTwitsSum=0x7f050010;
+        public static final int notification=0x7f05002f;
+        public static final int notificationDescr=0x7f050030;
         public static final int numberOfChars=0x7f050003;
+        public static final int offlineError=0x7f050032;
+        public static final int offlineSuccess=0x7f050031;
         public static final int pass=0x7f050005;
         public static final int passKey=0x7f050013;
         public static final int passSum=0x7f05000a;

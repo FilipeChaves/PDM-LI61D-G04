@@ -5,15 +5,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import winterwell.jtwitter.Status;
 import winterwell.jtwitter.Twitter;
+import winterwell.jtwitter.Twitter.Status;
 import winterwell.jtwitter.TwitterException;
 import android.app.Service;
 import android.content.Intent;
 import android.os.IBinder;
-import android.os.Looper;
 import android.util.Log;
-import android.widget.Toast;
 import chaves.android.Utils;
 import chaves.android.YambaApplication;
 
@@ -116,6 +114,7 @@ public class TimelinePull extends Service {
 				}
 				if(actualTimeLine == null){
 					stopRunning();
+					return;
 				}
 				//So notifica se houver mudanças
 				//TODO Mais tarde verificar o conteudo e só actualizar se houve um tweet diferente
@@ -136,7 +135,6 @@ public class TimelinePull extends Service {
 		}
 		
 		public void stopRunning(){
-			Toast.makeText(TimelinePull.this, "VAI PO CARALHO!", Toast.LENGTH_LONG).show();
 			_runFlag = false;
 			return;
 		}

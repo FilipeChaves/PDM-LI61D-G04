@@ -8,7 +8,6 @@ import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.IBinder;
 import android.os.Message;
-import android.widget.Toast;
 import chaves.android.Utils;
 import chaves.android.YambaApplication;
 
@@ -17,7 +16,6 @@ public class PublishService extends Service{
 	private HandlerThread mh;
 	private Handler h;
 	private static YambaApplication app;
-	private boolean _success = false;
 	
 	@Override
 	public IBinder onBind(Intent arg0) {
@@ -57,7 +55,7 @@ public class PublishService extends Service{
 		super.onStartCommand(intent, flags, startId);
 		
 		final String s = intent.getStringExtra("TwitterMessage");
-		if(!Utils.haveInternet( this )){//mudar para ContentProvider
+		if(!app.internetState()){//mudar para ContentProvider
 			app.addToPendingStatus(s);
 		}
 		else{
