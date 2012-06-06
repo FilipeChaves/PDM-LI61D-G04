@@ -5,8 +5,6 @@ import java.net.MalformedURLException;
 
 import chaves.android.R;
 import chaves.android.Utils;
-import chaves.android.R.id;
-import chaves.android.R.layout;
 import chaves.android.services.UserInfoPull;
 import android.content.ComponentName;
 import android.content.Intent;

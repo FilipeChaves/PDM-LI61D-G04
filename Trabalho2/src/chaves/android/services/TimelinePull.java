@@ -1,7 +1,6 @@
 package chaves.android.services;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -13,7 +12,6 @@ import android.app.Service;
 import android.content.Intent;
 import android.os.IBinder;
 import android.util.Log;
-import chaves.android.R;
 import chaves.android.Utils;
 import chaves.android.YambaApplication;
 
@@ -98,7 +96,6 @@ public class TimelinePull extends Service {
 			List<Status> actualTimeLine = null;
 			while(timeLineService._runFlag)
 			{
-				
 				Log.i(TAG, "TimeLine running");
 				Twitter t;
 				while((t = _application.getTwitter()) == null){
@@ -112,6 +109,7 @@ public class TimelinePull extends Service {
 					actualTimeLine = t.getHomeTimeline();
 				}
 				catch(TwitterException e){
+					Log.e(TAG,e.getMessage());
 					Log.e(TAG,"Failed to connect to twitter");
 				}
 				//So notifica se houver mudanças

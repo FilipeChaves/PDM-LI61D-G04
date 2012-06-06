@@ -8,7 +8,6 @@ import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.IBinder;
 import android.os.Message;
-import android.widget.Toast;
 import chaves.android.Utils;
 import chaves.android.YambaApplication;
 

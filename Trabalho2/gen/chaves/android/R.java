@@ -49,30 +49,31 @@ public final class R {
         public static final int timeline=0x7f030003;
         public static final int timelinelist=0x7f030004;
         public static final int userinfo=0x7f030005;
+        public static final int userinfolandscape=0x7f030006;
     }
     public static final class menu {
         public static final int menu=0x7f060000;
     }
     public static final class string {
         public static final int app_name=0x7f050000;
-        public static final int authorImage=0x7f050021;
-        public static final int autoRKey=0x7f050029;
-        public static final int autoRefresh=0x7f05002d;
+        public static final int authorImage=0x7f050022;
+        public static final int autoRKey=0x7f05002a;
+        public static final int autoRefresh=0x7f05002e;
         public static final int buttonValue=0x7f050002;
         public static final int defaultUrl=0x7f050019;
-        public static final int delayKey=0x7f05002a;
-        public static final int delaySubText=0x7f05002c;
-        public static final int delayTitle=0x7f05002b;
-        public static final int descrKey=0x7f05001c;
-        public static final int detail=0x7f050022;
+        public static final int delayKey=0x7f05002b;
+        public static final int delaySubText=0x7f05002d;
+        public static final int delayTitle=0x7f05002c;
+        public static final int descrKey=0x7f05001d;
+        public static final int detail=0x7f050023;
         public static final int done=0x7f050007;
-        public static final int errorMessage=0x7f050023;
+        public static final int errorMessage=0x7f050024;
         public static final int hello=0x7f050001;
-        public static final int hintTextStatus=0x7f050020;
+        public static final int hintTextStatus=0x7f050021;
         public static final int hours=0x7f05001a;
         public static final int idKey=0x7f050015;
-        public static final int imgKey=0x7f05001d;
-        public static final int internetDown=0x7f050028;
+        public static final int imgKey=0x7f05001e;
+        public static final int internetDown=0x7f050029;
         public static final int load=0x7f050008;
         public static final int minutes=0x7f05001b;
         public static final int nChars=0x7f05000c;
@@ -87,18 +88,19 @@ public final class R {
         public static final int passSum=0x7f05000a;
         public static final int prefs=0x7f050017;
         public static final int publishTimeKey=0x7f050016;
-        public static final int status=0x7f05001f;
+        public static final int seconds=0x7f05001c;
+        public static final int status=0x7f050020;
         public static final int timeline=0x7f050018;
-        public static final int timelineRefresh=0x7f050024;
-        public static final int titleKey=0x7f05001e;
-        public static final int titleServiceStart=0x7f050025;
-        public static final int titleServiceStop=0x7f050026;
-        public static final int tweetOwner=0x7f05002e;
+        public static final int timelineRefresh=0x7f050025;
+        public static final int titleKey=0x7f05001f;
+        public static final int titleServiceStart=0x7f050026;
+        public static final int titleServiceStop=0x7f050027;
+        public static final int tweetOwner=0x7f05002f;
         public static final int url=0x7f050006;
         public static final int urlKey=0x7f050014;
         public static final int urlSum=0x7f05000b;
         public static final int user=0x7f050004;
-        public static final int userInfo=0x7f050027;
+        public static final int userInfo=0x7f050028;
         public static final int userKey=0x7f050012;
         public static final int userSum=0x7f050009;
     }

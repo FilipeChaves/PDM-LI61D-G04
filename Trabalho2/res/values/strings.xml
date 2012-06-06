@@ -28,6 +28,7 @@
     <string name="defaultUrl">http://yamba.marakana.com/api</string>
     <string name="hours"> hours ago</string>
     <string name="minutes"> minutes ago</string>
+    <string name="seconds"> few seconds ago</string>
     <string name="descrKey">descr</string>
     <string name="imgKey">img</string>
     <string name="titleKey">title</string>

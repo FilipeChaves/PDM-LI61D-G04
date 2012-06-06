@@ -43,8 +43,8 @@ public class Utils {
 	public static boolean haveInternet(Context ctx) {
 
 	    NetworkInfo info = (NetworkInfo) ((ConnectivityManager) ctx
-	            .getSystemService(Context.CONNECTIVITY_SERVICE)).getNetworkInfo(ConnectivityManager.TYPE_WIFI);
-
+	            .getSystemService(Context.CONNECTIVITY_SERVICE))//.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
+	    		  .getActiveNetworkInfo();
 	    if (info == null) 
 	        return false;
 //	    Toast.makeText(ctx, "ConnectivityManager: " + ConnectivityManager.TYPE_WIFI + " Type: " + info.getSubtype(), Toast.LENGTH_LONG).show();
@@ -75,10 +75,10 @@ public class Utils {
 	 */
 	private static String getDate(Date createdAt) {
 		Date d = new Date();
-		
-		if(d.getHours() - createdAt.getHours() == 0)
+		if(d.getHours() - createdAt.getHours() > 0)
+			return (((d.getDay() - createdAt.getDay()) * 24) + d.getHours() - createdAt.getHours()) + " " + _timeAgo[0];
+		if(d.getMinutes() - createdAt.getMinutes() > 0)
 			return (d.getMinutes() - createdAt.getMinutes()) + " " + _timeAgo[1];
-		return (((d.getDay() - createdAt.getDay()) * 24) + d.getHours() - createdAt.getHours()) + " " + _timeAgo[0];
+		return _timeAgo[2];
 	}
-	
 }

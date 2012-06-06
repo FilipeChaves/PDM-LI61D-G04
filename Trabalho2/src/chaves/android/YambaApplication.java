@@ -131,7 +131,7 @@ public class YambaApplication extends Application implements OnSharedPreferenceC
 		/* Inicialização dos Arrays de Strings presentes na classe Utils, e que também serão usados na TimelineActivity */
 		Utils.init(_from = new String[]{ getString(R.string.imgKey), getString(R.string.titleKey), 
 				getString(R.string.descrKey), getString(R.string.publishTimeKey) , getString(R.string.idKey)},
-				_timeAgo = new String[]{getString(R.string.hours), getString(R.string.minutes)});
+				_timeAgo = new String[]{getString(R.string.hours), getString(R.string.minutes),getString(R.string.seconds)});
 		_pendingStatus = new LinkedList<String>();
 		prefs = PreferenceManager.getDefaultSharedPreferences(this);
 		prefs.registerOnSharedPreferenceChangeListener(this);
@@ -148,7 +148,7 @@ public class YambaApplication extends Application implements OnSharedPreferenceC
 	
 	private void createAccount(SharedPreferences prefs) {
 		if((!prefs.contains(getString(R.string.userKey))) || 
-				(!prefs.contains(getString(R.string.passKey))))
+				(!prefs.contains(getString(R.string.passKey))) || (!prefs.contains(getString(R.string.urlKey))) )
 			inflatePreferences();
 		_autoRefresh = prefs.getBoolean(getString(R.string.autoRKey), true);
 		_delay = Integer.parseInt(prefs.getString(getString(R.string.delayKey), "100"));
