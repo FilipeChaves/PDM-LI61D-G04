@@ -5,8 +5,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import winterwell.jtwitter.Status;
 import winterwell.jtwitter.Twitter;
-import winterwell.jtwitter.Twitter.Status;
 import winterwell.jtwitter.TwitterException;
 import android.app.Service;
 import android.content.Intent;
@@ -107,7 +107,7 @@ public class TimelinePull extends Service {
 					finally{timeLineService._runFlag = true;}
 				}
 				try{
-					actualTimeLine = t.getHomeTimeline();
+					actualTimeLine = t.getUserTimeline();
 				}
 				catch(TwitterException e){
 					Log.e(TAG,"Failed to connect to twitter");

@@ -1,11 +1,13 @@
 package chaves.android;
 
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.Map;
 
+import winterwell.jtwitter.OAuthSignpostClient;
+import winterwell.jtwitter.Status;
 import winterwell.jtwitter.Twitter;
-import winterwell.jtwitter.Twitter.Status;
 import android.app.Application;
 import android.app.Notification;
 import android.app.NotificationManager;
@@ -200,7 +202,7 @@ public class YambaApplication extends Application implements OnSharedPreferenceC
 			return;
 		}
 		else if(key == getString(R.string.delayKey)){
-			_delay = Integer.parseInt(s.getString(key, "100"));
+			_delay = Integer.parseInt(s.getString(key, "1"));
 			return;
 		}
 		if(key == getString(R.string.nTwitsKey)){
@@ -219,6 +221,9 @@ public class YambaApplication extends Application implements OnSharedPreferenceC
 		openAccount(b);
 	}
 	
+	static final String JTWITTER_OAUTH_KEY = "ZA8VpSCzYnGHtwWcmQoA";
+	static final String JTWITTER_OAUTH_SECRET = "cXcqqiljyYYsyW2QMn3KPoiGivN4bydEt4ZquLmKA0A";
+	
 	public void openAccount(boolean urlChanged){
 		String user = prefs.getString(getString(R.string.userKey), ""), 
 				pass = prefs.getString(getString(R.string.passKey), "");
@@ -226,9 +231,6 @@ public class YambaApplication extends Application implements OnSharedPreferenceC
 			return;
 		if(_wifi){
 			if(_tweet == null || !urlChanged){
-				/*Novo Constructor de Twitter, nao funciona desta maneira*/
-	//			URLConnectionHttpClient conn = new URLConnectionHttpClient(user, pass);
-	//			_tweet = new Twitter(user, conn);
 				_tweet = new Twitter(user, pass);
 			}
 			_tweet.setAPIRootUrl(prefs.getString(getString(R.string.urlKey), getString(R.string.defaultUrl)));
@@ -246,7 +248,7 @@ public class YambaApplication extends Application implements OnSharedPreferenceC
 	}
 
 	public long getDelay() {
-		return _delay*1000;
+		return _delay*1000*60;
 	}
 
 	public void refreshTimeline() {
