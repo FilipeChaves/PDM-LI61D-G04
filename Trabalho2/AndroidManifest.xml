@@ -26,6 +26,7 @@
         <activity android:name=".activities.UserStatus"></activity>
         <activity android:name=".activities.UserPreferences"></activity> 
         <activity android:name=".activities.UserInfo"></activity>
+
         <service android:name=".services.PublishService"></service>
         <service android:name=".services.TimelinePull"></service>
         <service android:name=".services.UserInfoPull"></service>

@@ -8,6 +8,7 @@ import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.IBinder;
 import android.os.Message;
+import chaves.android.R;
 import chaves.android.YambaApplication;
 
 public class PublishService extends Service{
@@ -52,25 +53,36 @@ public class PublishService extends Service{
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId) {
 		super.onStartCommand(intent, flags, startId);
-		
+		boolean sucess = true;
 		final String s = intent.getStringExtra("TwitterMessage");
 		if(!app.internetState()){//mudar para ContentProvider
 			app.addToPendingStatus(s);
 		}
 		else{
-			Message msg;
 			LinkedList<String> l = app.getPendingStatus();
-			for(String message : l){
-				msg = Message.obtain();
-				msg.obj = message;
-				h.sendMessage(msg);
+			if(l.size() > 0){
+				for(String message : l){
+					if(app.internetState()){
+						send(message);
+					}
+					else{
+						app.sendTwitterNotification(R.string.offlineError);
+						sucess = false;
+						break;
+					}
+				}
+				if(sucess)
+					app.sendTwitterNotification(R.string.offlineSuccess);
 			}
-			msg = Message.obtain();
-			app.removePendingStatus();
-			msg.obj = s;
-			h.sendMessage(msg);
+			send(s);
 		}
 		return 1;
+	}
+
+	private void send(String message) {
+		Message msg = Message.obtain();
+		msg.obj = message;
+		h.sendMessage(msg);
 	}
 
 }
