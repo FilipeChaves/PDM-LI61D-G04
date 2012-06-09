@@ -1,11 +1,10 @@
 package chaves.android;
 
-import java.net.URI;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.LinkedList;
 import java.util.Map;
 
-import winterwell.jtwitter.OAuthSignpostClient;
 import winterwell.jtwitter.Status;
 import winterwell.jtwitter.Twitter;
 import android.app.Application;
@@ -24,6 +23,7 @@ import android.widget.Toast;
 import chaves.android.activities.Timeline;
 import chaves.android.activities.UserPreferences;
 import chaves.android.activities.UserStatus;
+import chaves.android.database.StatusDataSource;
 import chaves.android.services.TimelinePull;
 
 /* Application não deve ter estado, só dados para reduzir o custo entre activities do mesmo processo */
@@ -48,7 +48,9 @@ public class YambaApplication extends Application implements OnSharedPreferenceC
 	private TimelinePull.Updater _timelineServiceThread;
 	private LinkedList<Map<String,String>> _timelineData;
 	private LinkedList<String> _pendingStatus;
-	
+	private StatusDataSource _dataSource;
+	/* Ultimo acesso à base de dados */
+	private Date _lastAccess;
 	@Override
 	public void onCreate() {
 		super.onCreate();
@@ -60,6 +62,9 @@ public class YambaApplication extends Application implements OnSharedPreferenceC
 		prefs = PreferenceManager.getDefaultSharedPreferences(this);
 		prefs.registerOnSharedPreferenceChangeListener(this);
 		
+		_lastAccess = new Date();
+		_lastAccess.setTime(0);
+		
 		_wifi = Utils.haveInternet(this);
 		
 		IntentFilter filter = new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION);
@@ -67,6 +72,9 @@ public class YambaApplication extends Application implements OnSharedPreferenceC
 		registerReceiver(new ConnectivityReceiver(),filter);
 		
 		createAccount(prefs);
+		_dataSource = new StatusDataSource(this);
+		_dataSource.open();
+		
 		
 		Log.i(TAG, "onCreate");
 	}
@@ -82,6 +90,10 @@ public class YambaApplication extends Application implements OnSharedPreferenceC
 		Log.i(TAG, "setTimeLineActivity");
 	}
 	
+	public StatusDataSource getDataSource() {
+		return _dataSource;
+	}
+
 	public void setButtonEnable(boolean enable){
 		_userStatusButtonIsDisable = enable;
 		Log.i(TAG, "setButtonEnable");
@@ -117,7 +129,7 @@ public class YambaApplication extends Application implements OnSharedPreferenceC
 		}
 		
 		if(_timelineActivity == null)
-			sendTwitterNotification();
+			sendTwitterNotification(R.string.notificationDescr);
 		else
 			refreshInUserThread();
 	}
@@ -310,7 +322,15 @@ public class YambaApplication extends Application implements OnSharedPreferenceC
 //		nm.notify(1, n);
 //	}
 	
-	private void sendTwitterNotification() {
+	public Date getLastAccess(){
+		return _lastAccess;
+	}
+	
+	public void setCurrentTime(){
+		_lastAccess = new Date(System.currentTimeMillis());
+	}
+	
+	public void sendTwitterNotification(int descr) {
 		long when = System.currentTimeMillis();
 		Notification n  = new Notification(R.drawable.twitter_logo, getString(R.string.app_name), when);
 		
@@ -319,7 +339,7 @@ public class YambaApplication extends Application implements OnSharedPreferenceC
 		
 		Intent it = new Intent(this, Timeline.class);
 		PendingIntent pi = PendingIntent.getActivity(this, 0, it, 0);
-		n.setLatestEventInfo(this, getString(R.string.notification), getString(R.string.notificationDescr), pi);
+		n.setLatestEventInfo(this, getString(R.string.notification), getString(descr), pi);
 		
 		
 		NotificationManager nm = (NotificationManager) this.getSystemService(Context.NOTIFICATION_SERVICE);

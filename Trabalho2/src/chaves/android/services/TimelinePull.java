@@ -1,6 +1,7 @@
 package chaves.android.services;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -94,6 +95,7 @@ public class TimelinePull extends Service {
 		public void run(){
 			TimelinePull timeLineService = TimelinePull.this;
 			List<Status> actualTimeLine = null;
+			Date lastAccess = null; 
 			while(_runFlag)
 			{
 				
@@ -107,7 +109,9 @@ public class TimelinePull extends Service {
 					finally{timeLineService._runFlag = true;}
 				}
 				try{
-					actualTimeLine = t.getUserTimeline();
+					lastAccess = _application.getLastAccess();
+					actualTimeLine = t.getHomeTimeline();
+					_application.setCurrentTime();
 				}
 				catch(TwitterException e){
 					Log.e(TAG,"Failed to connect to twitter");
@@ -118,11 +122,13 @@ public class TimelinePull extends Service {
 				}
 				//So notifica se houver mudanças
 				//TODO Mais tarde verificar o conteudo e só actualizar se houve um tweet diferente
-				if(_timeline == null && actualTimeLine != null || actualTimeLine.size() != _timeline.size()){
-					_timeline = actualTimeLine;
-					putDataInMapper();
-					_application.setTimeLinedata(_showedList);
+				
+				for(Status status : actualTimeLine){
+					if(status.createdAt.getTime() >= lastAccess.getTime()) {
+						_application.getDataSource().createStatus(status);
+					}
 				}
+				
 				Log.i(TAG, "TimeLine ran");
 				if(!_application.getAutoRefresh()){
 					stopRunning();
