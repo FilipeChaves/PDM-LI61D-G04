@@ -13,10 +13,9 @@ import chaves.android.YambaApplication;
 
 public class PublishService extends Service{
 	
-	public HandlerThread mh;
-	public Handler h;
-	public static YambaApplication app;
-	private boolean _success = false;
+	private HandlerThread mh;
+	private Handler h;
+	private static YambaApplication app;
 	
 	@Override
 	public IBinder onBind(Intent arg0) {
@@ -56,7 +55,7 @@ public class PublishService extends Service{
 		super.onStartCommand(intent, flags, startId);
 		
 		final String s = intent.getStringExtra("TwitterMessage");
-		if(!Utils.haveInternet( this )){//mudar para ContentProvider
+		if(!app.internetState()){//mudar para ContentProvider
 			app.addToPendingStatus(s);
 		}
 		else{

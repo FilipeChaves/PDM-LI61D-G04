@@ -1,8 +1,7 @@
 package chaves.android.services;
 
-import chaves.android.YambaApplication;
-import chaves.android.activities.UserInfo;
-import winterwell.jtwitter.User;
+import winterwell.jtwitter.Twitter;
+import winterwell.jtwitter.Twitter.User;
 import android.app.Service;
 import android.content.Intent;
 import android.os.Bundle;
@@ -12,6 +11,8 @@ import android.os.Message;
 import android.os.Messenger;
 import android.os.RemoteException;
 import android.util.Log;
+import chaves.android.YambaApplication;
+import chaves.android.activities.UserInfo;
 
 public class UserInfoPull extends Service{
 	
@@ -49,7 +50,8 @@ public class UserInfoPull extends Service{
 	}
 	
 	protected Bundle updateUserInfo() {
-		User user = _app.getTwitter().getSelf();
+		User user = _app.getTwitter().getHomeTimeline().get(0).getUser();
+		
 		Bundle b = new Bundle();
 		b.putString(UserInfo.USERNAME, user.name);
 		b.putString(UserInfo.USERIMAGE, user.profileImageUrl.toString());

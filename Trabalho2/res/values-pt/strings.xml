@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Yamba Mobile</string>
+    <string name="app_name">Yamba Application</string>
     <string name="hello">Yamba</string>
     <string name="buttonValue">Enviar</string>
     <string name="numberOfChars">140</string>
@@ -30,8 +30,12 @@
     <string name="status">Status</string>
     <string name="errorMessage">Erro: O número de Caracteres foi excedido </string>
     <string name="authorImage">Imagem do autor</string>
-        <string name="delayTitle">Delay em segundos</string>
+    <string name="delayTitle">Delay em segundos</string>
     <string name="delaySubText">Entre refresh da Timeline</string>
     <string name="autoRefresh">Timeline AutoRefresh</string>
     <string name="tweetOwner">Este Tweet foi escrito por </string>
+    <string name="notification">Notificação do Twitter</string>
+    <string name="notificationDescr">Novos Status na Timeline</string>
+    <string name="offlineSuccess">Sucesso no envio de mensagens</string>
+    <string name="offlineError">Erro no envio de mensagens</string>
 </resources>

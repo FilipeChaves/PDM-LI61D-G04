@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Programming on Mobile Devices</string>
+    <string name="app_name">Yamba Application</string>
     <string name="hello">Yamba</string>
     <string name="buttonValue">Submit</string>
     <string name="numberOfChars">140</string>
@@ -48,4 +48,8 @@
     <string name="delaySubText">Between Timeline Refresh</string>
     <string name="autoRefresh">Timeline AutoRefresh</string>
     <string name="tweetOwner">This Tweet was written by </string>
+    <string name="notification">Twitter Notification</string>
+        <string name="notificationDescr">New Timeline Status</string>
+    <string name="offlineSuccess">Offline status submited successfully</string>
+    <string name="offlineError">Error submiting offline status</string>
 </resources>
