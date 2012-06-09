@@ -7,7 +7,7 @@ import java.net.URL;
 import java.util.Date;
 import java.util.HashMap;
 
-import winterwell.jtwitter.Twitter.Status;
+import winterwell.jtwitter.Status;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.net.ConnectivityManager;

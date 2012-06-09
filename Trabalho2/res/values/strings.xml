@@ -44,7 +44,7 @@
     <string name="internetDown">Please make sure you have Wi-Fi connection before open this application</string>
     <string name="autoRKey">autoR</string>
     <string name="delayKey">delay</string>
-    <string name="delayTitle">Delay in seconds</string>
+    <string name="delayTitle">Delay in minutes</string>
     <string name="delaySubText">Between Timeline Refresh</string>
     <string name="autoRefresh">Timeline AutoRefresh</string>
     <string name="tweetOwner">This Tweet was written by </string>
