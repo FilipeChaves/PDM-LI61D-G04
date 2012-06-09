@@ -1,6 +1,6 @@
 package chaves.android.services;
 
-import winterwell.jtwitter.User;
+import winterwell.jtwitter.Twitter.User;
 import android.app.Service;
 import android.content.Intent;
 import android.os.Bundle;

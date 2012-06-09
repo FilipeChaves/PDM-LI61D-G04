@@ -1,12 +1,9 @@
 package chaves.android;
 
-import java.net.URI;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.Map;
-
-import winterwell.jtwitter.OAuthSignpostClient;
-import winterwell.jtwitter.Status;
+import winterwell.jtwitter.Twitter.Status;
 import winterwell.jtwitter.Twitter;
 import android.app.Application;
 import android.app.Notification;
