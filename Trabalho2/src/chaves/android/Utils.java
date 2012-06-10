@@ -7,11 +7,11 @@ import java.net.URL;
 import java.util.Date;
 import java.util.HashMap;
 
-import winterwell.jtwitter.Twitter.Status;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import chaves.android.model.StatusDTO;
 
 public class Utils {
 	
@@ -50,13 +50,13 @@ public class Utils {
 	    return false;
 	}
 
-	public static HashMap<String, String> getMap(Status status) {
+	public static HashMap<String, String> getMap(StatusDTO status) {
 		HashMap<String,String> map = new HashMap<String, String>();
-		map.put(_from[0], status.user.profileImageUrl.toString());
-		map.put(_from[1], status.user.name);
-		map.put(_from[2], status.getText());
-		map.put(_from[3], getDate(status.createdAt));
-		map.put(_from[4], "" + status.user.id);
+		map.put(_from[0], status.getImage());
+		map.put(_from[1], status.get_user());
+		map.put(_from[2], status.getMessage());
+		map.put(_from[3], getDate(new Date(status.get_date())));
+		map.put(_from[4], "" + status.get_id());
 		return map;
 	}
 	

@@ -3,9 +3,11 @@ package chaves.android;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
-import winterwell.jtwitter.Twitter.Status;
+
 import winterwell.jtwitter.Twitter;
+import winterwell.jtwitter.Twitter.Status;
 import android.app.Application;
 import android.app.Notification;
 import android.app.NotificationManager;
@@ -23,6 +25,7 @@ import chaves.android.activities.Timeline;
 import chaves.android.activities.UserPreferences;
 import chaves.android.activities.UserStatus;
 import chaves.android.database.StatusDataSource;
+import chaves.android.model.StatusDTO;
 import chaves.android.services.TimelinePull;
 
 /* Application não deve ter estado, só dados para reduzir o custo entre activities do mesmo processo */
@@ -48,6 +51,7 @@ public class YambaApplication extends Application implements OnSharedPreferenceC
 	private LinkedList<Map<String,String>> _timelineData;
 	private LinkedList<String> _pendingStatus;
 	private StatusDataSource _dataSource;
+	
 	/* Ultimo acesso à base de dados */
 	private Date _lastAccess;
 	@Override
@@ -56,14 +60,11 @@ public class YambaApplication extends Application implements OnSharedPreferenceC
 		/* Inicialização dos Arrays de Strings presentes na classe Utils, e que também serão usados na TimelineActivity */
 		Utils.init(_from = new String[]{ getString(R.string.imgKey), getString(R.string.titleKey), 
 				getString(R.string.descrKey), getString(R.string.publishTimeKey) , getString(R.string.idKey)},
-				_timeAgo = new String[]{getString(R.string.hours), getString(R.string.minutes)});
+				_timeAgo = new String[]{getString(R.string.hours), getString(R.string.minutes),getString(R.string.seconds)});
 		_pendingStatus = new LinkedList<String>();
 		prefs = PreferenceManager.getDefaultSharedPreferences(this);
 		prefs.registerOnSharedPreferenceChangeListener(this);
-		
-		_lastAccess = new Date();
-		_lastAccess.setTime(0);
-		
+				
 		_wifi = Utils.haveInternet(this);
 		
 		IntentFilter filter = new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION);
@@ -73,7 +74,6 @@ public class YambaApplication extends Application implements OnSharedPreferenceC
 		createAccount(prefs);
 		_dataSource = new StatusDataSource(this);
 		_dataSource.open();
-		
 		
 		Log.i(TAG, "onCreate");
 	}
@@ -91,6 +91,9 @@ public class YambaApplication extends Application implements OnSharedPreferenceC
 	
 	public StatusDataSource getDataSource() {
 		return _dataSource;
+	}
+	public LinkedList<StatusDTO> getAllStatus(){
+		return _dataSource.getAllStatus();
 	}
 
 	public void setButtonEnable(boolean enable){
@@ -182,7 +185,7 @@ public class YambaApplication extends Application implements OnSharedPreferenceC
 	
 	private void createAccount(SharedPreferences prefs) {
 		if((!prefs.contains(getString(R.string.userKey))) || 
-				(!prefs.contains(getString(R.string.passKey))))
+				(!prefs.contains(getString(R.string.passKey))) ||
 				(!prefs.contains(getString(R.string.passKey))) || (!prefs.contains(getString(R.string.urlKey))) )
 			inflatePreferences();
 		else
@@ -220,7 +223,7 @@ public class YambaApplication extends Application implements OnSharedPreferenceC
 		}
 		if(key == getString(R.string.nTwitsKey)){
 			int aux = 0;
-			_timelineData.subList(0, (aux = s.getInt(key, Integer.parseInt(DEFAULT_LIST_MAX_SIZE))  ) == 0 ? Integer.parseInt(DEFAULT_LIST_MAX_SIZE) : aux );
+			_timelineData.subList(0, ((aux = Integer.parseInt(s.getString(key, DEFAULT_LIST_MAX_SIZE)) ) == 0 ? Integer.parseInt(DEFAULT_LIST_MAX_SIZE) : aux ));
 			refreshInUserThread();
 			return;
 		}
@@ -272,7 +275,8 @@ public class YambaApplication extends Application implements OnSharedPreferenceC
 	}
 
 	public void newStatus(Status status) {
-		_timelineData.addFirst(Utils.getMap(status));
+		_timelineData.addFirst(Utils.getMap(_dataSource.createStatus(status)));
+		refreshInUserThread();
 	}
 
 	public String[] getFrom() {
@@ -330,6 +334,9 @@ public class YambaApplication extends Application implements OnSharedPreferenceC
 	public void setCurrentTime(){
 		_lastAccess = new Date(System.currentTimeMillis());
 	}
+	public void setCurrentTime(long createdAt) {
+		_lastAccess=new Date(createdAt);	
+	}
 	
 	public void sendTwitterNotification(int descr) {
 		long when = System.currentTimeMillis();
@@ -346,4 +353,6 @@ public class YambaApplication extends Application implements OnSharedPreferenceC
 		NotificationManager nm = (NotificationManager) this.getSystemService(Context.NOTIFICATION_SERVICE);
 		nm.notify(1, n);
 	}
+
+	
 }

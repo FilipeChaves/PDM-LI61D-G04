@@ -1,11 +1,9 @@
 package chaves.android.database;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
+import java.util.LinkedList;
 import java.util.List;
-import java.util.SortedMap;
 
-import winterwell.jtwitter.Status;
+import winterwell.jtwitter.Twitter.Status;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
@@ -20,7 +18,7 @@ public class StatusDataSource {
 	private SQLiteDatabase database;
 	private StatusSQLiteHelper dbHelper;
 	private String[] allColumns = { StatusSQLiteHelper.COLUMN_STATUS_ID, StatusSQLiteHelper.COLUMN_USER_NAME,
-			StatusSQLiteHelper.COLUMN_STATUS_MESSAGE, StatusSQLiteHelper.COLUMN_STATUS_CREATED_AT};
+			StatusSQLiteHelper.COLUMN_STATUS_MESSAGE, StatusSQLiteHelper.COLUMN_STATUS_CREATED_AT, StatusSQLiteHelper.COLUMN_USER_IMAGE};
 
 	public StatusDataSource(Context context) {
 		dbHelper = new StatusSQLiteHelper(context);
@@ -35,22 +33,21 @@ public class StatusDataSource {
 	}
 
 	public StatusDTO createStatus(Status status) {
-		HashMap<String,String> oi = new LinkedHashMap<String,String>();
 		ContentValues values = new ContentValues();
-		values.put(StatusSQLiteHelper.COLUMN_STATUS_ID, status.getId().toString());
+		values.put(StatusSQLiteHelper.COLUMN_STATUS_ID, status.getId());
 		values.put(StatusSQLiteHelper.COLUMN_USER_NAME, status.user.name);
 		values.put(StatusSQLiteHelper.COLUMN_STATUS_MESSAGE, status.text);
-		values.put(StatusSQLiteHelper.COLUMN_STATUS_CREATED_AT, status.createdAt.toString());
-		//values.putAll(oi);
+		values.put(StatusSQLiteHelper.COLUMN_STATUS_CREATED_AT, status.createdAt.getTime());
+		values.put(StatusSQLiteHelper.COLUMN_USER_IMAGE, status.user.profileImageUrl.toString());
 		database.insert(StatusSQLiteHelper.STATUS_TABLE, null, values);
 		Cursor cursor = database.query(StatusSQLiteHelper.STATUS_TABLE,
 				allColumns, StatusSQLiteHelper.COLUMN_STATUS_ID + " = " + status.getId(), null,
 				null, null, null);
 		cursor.moveToFirst();
-		StatusDTO newComment = cursorToStatus(cursor);
+		StatusDTO newStatus = cursorToStatus(cursor);
 		Log.i("Inserted","ID = " + status.getId());
 		cursor.close();
-		return newComment;
+		return newStatus;
 	}
 
 	public void deleteStatus(StatusDTO status) {
@@ -59,8 +56,8 @@ public class StatusDataSource {
 				+ " = " + id, null);
 	}
 
-	public List<StatusDTO> getAllStatus() {
-		List<StatusDTO> listOfStatus = new ArrayList<StatusDTO>();
+	public LinkedList<StatusDTO> getAllStatus() {
+		LinkedList<StatusDTO> listOfStatus = new LinkedList<StatusDTO>();
 
 		Cursor cursor = database.query(StatusSQLiteHelper.STATUS_TABLE,
 				allColumns, null, null, null, null, null);
@@ -68,12 +65,18 @@ public class StatusDataSource {
 		cursor.moveToFirst();
 		while (!cursor.isAfterLast()) {
 			StatusDTO status = cursorToStatus(cursor);
-			listOfStatus.add(status);
+			listOfStatus.addFirst(status);
 			cursor.moveToNext();
 		}
 		// Make sure to close the cursor
 		cursor.close();
 		return listOfStatus;
+	}
+	
+	public boolean isStatusOnDataBase(Status status){
+		String[] selectionArgs = {String.valueOf(status.id)};
+		Cursor cursor = database.query(StatusSQLiteHelper.STATUS_TABLE, allColumns, "_id = ?", selectionArgs, null, null, null);
+	   return cursor.moveToFirst();
 	}
 
 	private StatusDTO cursorToStatus(Cursor cursor) {
@@ -81,7 +84,8 @@ public class StatusDataSource {
 		status.set_id(cursor.getInt(0));
 		status.set_user(cursor.getString(1));
 		status.setMessage(cursor.getString(2));
-		status.set_date(cursor.getString(3));
+		status.set_date(cursor.getLong(3));
+		status.setImage(cursor.getString(4));
 		return status;
 	}
 }

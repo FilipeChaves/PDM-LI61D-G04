@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.Map;
 
 import winterwell.jtwitter.Twitter.Status;
-import winterwell.jtwitter.Twitter;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
@@ -34,12 +33,9 @@ public class Timeline extends SMActivity implements OnItemClickListener{
 	private final String TAG = "TimelineActivity";
 	ArrayList<Map<String,String>> showedList = new ArrayList<Map<String, String>>();
 	List<Status> timelineList;
-	private int list_max_size;
 	private int max_chars_per_tweet = 25;
-	private String[] timeAgo;
 	public String[] from;
 	private ListView lv;
-	private Twitter t;
 	private final Timeline timelineActivity = this;
 
 	@Override
@@ -54,7 +50,6 @@ public class Timeline extends SMActivity implements OnItemClickListener{
 		lv = (ListView) findViewById(android.R.id.list);
 		lv.setOnItemClickListener(this);
 		from = app.getFrom();
-		timeAgo = app.getTimeAgo();
 		((YambaApplication)getApplication()).setTimeLineActivity(this);
 		Log.i(TAG,"onCreate");
 	}

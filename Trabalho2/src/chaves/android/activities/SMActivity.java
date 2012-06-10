@@ -1,9 +1,5 @@
 package chaves.android.activities;
 
-import chaves.android.R;
-import chaves.android.YambaApplication;
-import chaves.android.R.id;
-import chaves.android.R.menu;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -11,6 +7,8 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import chaves.android.R;
+import chaves.android.YambaApplication;
 
 public class SMActivity extends Activity{
 	private String TAG = "SharedMenu";

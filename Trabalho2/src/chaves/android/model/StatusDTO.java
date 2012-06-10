@@ -7,8 +7,14 @@ public class StatusDTO {
 	private String _user;
 	private String message;
 	private Date _date;
+	private String _image;
 	
-	
+	public String getImage(){
+		return _image;
+	}
+	public void setImage(String image){
+		_image=image;
+	}
 	public int get_id() {
 		return _id;
 	}
@@ -27,13 +33,10 @@ public class StatusDTO {
 	public void set_user(String _user) {
 		this._user = _user;
 	}
-	public String get_date() {
-		return _date.toString();
+	public long get_date() {
+		return _date.getTime();
 	}
-	public void set_date(String date) {
-		this._date = new Date(Date.parse(date));
+	public void set_date(long date) {
+		this._date = new Date(date);
 	}
-	
-	
-	
 }

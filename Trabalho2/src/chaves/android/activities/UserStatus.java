@@ -1,20 +1,11 @@
 package chaves.android.activities;
 
 import java.util.HashMap;
-import java.util.List;
-
-import chaves.android.R;
-import chaves.android.R.id;
-import chaves.android.R.layout;
-import chaves.android.R.string;
-import chaves.android.services.PublishService;
 
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.os.Message;
-import android.os.Parcel;
 import android.text.Editable;
 import android.text.InputFilter;
 import android.text.TextWatcher;
@@ -24,6 +15,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
+import chaves.android.R;
+import chaves.android.services.PublishService;
 
 public class UserStatus extends SMActivity implements TextWatcher  {
 

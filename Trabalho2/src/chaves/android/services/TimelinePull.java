@@ -3,11 +3,12 @@ package chaves.android.services;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import winterwell.jtwitter.Twitter.Status;
 import winterwell.jtwitter.Twitter;
+import winterwell.jtwitter.Twitter.Status;
 import winterwell.jtwitter.TwitterException;
 import android.app.Service;
 import android.content.Intent;
@@ -15,6 +16,8 @@ import android.os.IBinder;
 import android.util.Log;
 import chaves.android.Utils;
 import chaves.android.YambaApplication;
+import chaves.android.database.StatusDataSource;
+import chaves.android.model.StatusDTO;
 
 public class TimelinePull extends Service {
 	
@@ -25,7 +28,8 @@ public class TimelinePull extends Service {
 	private boolean _runFlag = false;
 	private Updater _updater;
 	private YambaApplication _application;
-	
+	private LinkedList<StatusDTO> listOfStatus;
+	private StatusDataSource _dataSource;
 	/**
 	 * 	Não Implementado , só para boundedServices
 	 */
@@ -42,6 +46,7 @@ public class TimelinePull extends Service {
 		super.onCreate();
 		_application = (YambaApplication)getApplication();
 		_updater = new Updater();
+		_dataSource = _application.getDataSource();
 		Log.i(TAG,"onCreate");
 	}
 	
@@ -90,59 +95,59 @@ public class TimelinePull extends Service {
 			super("Service-TimeLinePull");
 			_showedList = new ArrayList<Map<String, String>>();
 			_application.setServiceThread(this);
+			listOfStatus = new LinkedList<StatusDTO>();
 		}
 		
 		public void run(){
 			TimelinePull timeLineService = TimelinePull.this;
 			List<Status> actualTimeLine = null;
-			Date lastAccess = null; 
-			while(_runFlag)
+			while(true)
 			{
 				Log.i(TAG, "TimeLine running");
-				Twitter t;
-				while((t = _application.getTwitter()) == null){
+				Twitter t = null;
+				do{
 					try {
 						timeLineService._runFlag = false;
 						Thread.sleep(INITIAL_DELAY);
-					} catch (InterruptedException e) {t = _application.getTwitter();}
-					finally{timeLineService._runFlag = true;}
-				}
+					} catch (InterruptedException e) {}
+					finally{ t = _application.getTwitter();
+							 timeLineService._runFlag = true;}
+				}while(t == null);
 				try{
-					lastAccess = _application.getLastAccess();
 					actualTimeLine = t.getHomeTimeline();
-					_application.setCurrentTime();
 				}
 				catch(TwitterException e){
 					Log.e(TAG,e.getMessage());
 					Log.e(TAG,"Failed to connect to twitter");
 				}
 				if(actualTimeLine == null){
-					stopRunning();
+					_runFlag = false;
 					return;
 				}
 				//So notifica se houver mudanças
-				//TODO Mais tarde verificar o conteudo e só actualizar se houve um tweet diferente
-				
+				_timeline = actualTimeLine;
 				for(Status status : actualTimeLine){
-					if(status.createdAt.getTime() >= lastAccess.getTime()) {
-						_application.getDataSource().createStatus(status);
+					if(!_dataSource.isStatusOnDataBase(status)){
+						_dataSource.createStatus(status);
 					}
+					else break;
 				}
+				
+				listOfStatus = _dataSource.getAllStatus();
+				
+				putDataInMapper();
+				_application.setTimeLinedata(_showedList);
 				
 				Log.i(TAG, "TimeLine ran");
 				if(!_application.getAutoRefresh()){
-					stopRunning();
+					_runFlag = false;
+					return;
 				}
 				try{
 					Thread.sleep(_application.getDelay());
 				}
 				catch(InterruptedException e){}
 			}
-		}
-		
-		public void stopRunning(){
-			_runFlag = false;
-			return;
 		}
 		
 		public boolean isRunning(){
@@ -157,8 +162,8 @@ public class TimelinePull extends Service {
 			int maxsize = _application.getListMaxSize();
 			_showedList.clear();
 			int i = 0;
-			while(i < _timeline.size() && i < maxsize){
-				map = Utils.getMap(_timeline.get(i));
+			while(i < listOfStatus.size() && i < maxsize){
+				map = Utils.getMap(listOfStatus.get(i));
 				_showedList.add(map);
 				++i;
 			}
